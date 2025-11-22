@@ -1,18 +1,27 @@
 import React, { useState } from "react";
 import "./login.css";
 
+import authSercice from "../../Services/UserService";
+import type { Login } from "../../Services/Interfaces/UserInterface";
+
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState<Login>({
+    email: "",
+    password: "",
+  });
   const [error, setError] = useState("");
 
-  const submitHendler = (e: React.FormEvent) => {
+  const submitHendler = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    console.log(email, password);
+    console.log(formData);
 
-    setEmail("");
-    setPassword("");
+    try {
+      const response = await authSercice.login(formData);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -27,14 +36,18 @@ export default function Login() {
             <label htmlFor="Email">Email</label>
             <input
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
             />
             <label htmlFor="Password">Password</label>
             <input
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
             />
             <button>Submit</button>
           </form>
