@@ -35,11 +35,11 @@ const authService = {
         body: JSON.stringify(registerData),
       });
       if (!response.ok) {
-        throw new Error("User not found");
+        throw new Error("Incorect credentials");
       }
       const data: AuthResponse = await response.json();
 
-      localStorage.setItem("token", data.token);
+      return data;
 
       return data;
     } catch (error) {

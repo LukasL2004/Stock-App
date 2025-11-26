@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import "./login.css";
+import "./signUp.css";
 
 import authSercice from "../../Services/UserService";
 import type { Login } from "../../Services/Interfaces/UserInterface";
 import { useNavigate } from "react-router";
 
-export default function Login() {
+export default function SignUp() {
   const [formData, setFormData] = useState<Login>({
     email: "",
     password: "",
@@ -13,8 +13,8 @@ export default function Login() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  function toSignUp() {
-    navigate("/SignUp");
+  function toLogin() {
+    navigate("/Login");
   }
 
   const submitHendler = async (e: React.FormEvent) => {
@@ -23,8 +23,8 @@ export default function Login() {
     console.log(formData);
 
     try {
-      const response = await authSercice.login(formData);
-      console.log(response);
+      await authSercice.register(formData);
+      navigate("/Login");
     } catch (error) {
       console.log(error);
     }
@@ -37,9 +37,9 @@ export default function Login() {
         <div className="container">
           <form onSubmit={submitHendler}>
             <div className="switch">
-              <h1 className="openedBtn">Login</h1>
+              <h1 onClick={toLogin}>Login</h1>
               <h1>|</h1>
-              <h1 onClick={toSignUp}>Sign up</h1>
+              <h1 className="openedBtn">Sign up</h1>
             </div>
             <h1>STOCKER</h1>
             <h3>Join us today to grow your wealth</h3>
