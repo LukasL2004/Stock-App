@@ -24,6 +24,7 @@ export default function Login() {
 
     try {
       const response = await authSercice.login(formData);
+      navigate("/Profile");
       console.log(response);
     } catch (error) {
       console.log(error);
