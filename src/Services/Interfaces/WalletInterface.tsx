@@ -6,3 +6,7 @@ export interface Wallet {
 export interface walletResponse {
   balance: number;
 }
+
+export interface ChangeAmount {
+  amount: number;
+}
