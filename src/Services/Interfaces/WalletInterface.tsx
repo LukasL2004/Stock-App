@@ -10,3 +10,7 @@ export interface walletResponse {
 export interface ChangeAmount {
   amount: number;
 }
+
+export interface InvestmentAmount {
+  investment: number;
+}

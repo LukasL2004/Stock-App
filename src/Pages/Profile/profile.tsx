@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import WalletService from "../../Services/WalletService";
+import "./Profile.css";
 
 export default function Profile() {
   const [balance, setBalance] = useState<number>(0);
@@ -7,6 +8,7 @@ export default function Profile() {
   const [error, setError] = useState<string>("");
   const [Addamount, setADDAmount] = useState<number>();
   const [WithdrawAmount, setWithdrawAmount] = useState<number>();
+  const [investment, setInvestment] = useState<number>();
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -17,8 +19,10 @@ export default function Profile() {
         if (!token) {
           throw new Error("You are not logged in");
         }
-        const response = await WalletService.Balance(token);
-        setBalance(response.balance);
+        const balanceResponse = await WalletService.Balance(token);
+        const investmentResponse = await WalletService.Investment(token);
+        setInvestment(investmentResponse.investment);
+        setBalance(balanceResponse.balance);
       } catch (error) {
         console.log(error);
         setError("something doesn t work");
@@ -79,7 +83,7 @@ export default function Profile() {
         <div className="addFounds">+</div>
         <div className="balance">{balance}</div>
       </div>
-      <div className="statBox"></div>
+      <div className="statBox">{investment}</div>
 
       <form action="Submit" onSubmit={AddFounds}>
         <input
