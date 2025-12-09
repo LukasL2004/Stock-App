@@ -11,28 +11,28 @@ export default function Profile() {
   const [investment, setInvestment] = useState<number>();
 
   useEffect(() => {
-    const fetchBalance = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        setLoading(true);
-
-        if (!token) {
-          throw new Error("You are not logged in");
-        }
-        const balanceResponse = await WalletService.Balance(token);
-        const investmentResponse = await WalletService.Investment(token);
-        setInvestment(investmentResponse.investment);
-        setBalance(balanceResponse.balance);
-      } catch (error) {
-        console.log(error);
-        setError("something doesn t work");
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchBalance();
   }, []);
 
+  const fetchBalance = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      setLoading(true);
+
+      if (!token) {
+        throw new Error("You are not logged in");
+      }
+      const balanceResponse = await WalletService.Balance(token);
+      const investmentResponse = await WalletService.Investment(token);
+      setInvestment(investmentResponse.investment);
+      setBalance(balanceResponse.balance);
+    } catch (error) {
+      console.log(error);
+      setError("something doesn t work");
+    } finally {
+      setLoading(false);
+    }
+  };
   const AddFounds = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -44,6 +44,7 @@ export default function Profile() {
         throw new Error("Please use an valid amount");
       }
       const response = await WalletService.AddFounds(token, Addamount);
+      await fetchBalance();
       console.log(response);
     } catch (error) {
       console.log(error);
@@ -62,6 +63,7 @@ export default function Profile() {
       }
 
       const response = await WalletService.Withdraw(token, WithdrawAmount);
+      await fetchBalance();
       console.log(response);
     } catch (error) {
       console.log(error);
@@ -72,39 +74,40 @@ export default function Profile() {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="profile">
-      <div className="profileHeader">
-        <div className="profilePic">
-          <img src="" alt="" />
+    <div className="wraper">
+      <div className="profile">
+        <div className="profileHeader">
+          <div className="profilePic">
+            <img src="" alt="" />
+          </div>
+          <h2 className="username"></h2>
         </div>
-        <h2 className="username"></h2>
+        <div className="statBox">
+          <div className="addFounds">+</div>
+          <div className="balance">{balance}</div>
+        </div>
+        <div className="statBox">{investment}</div>
+        <form action="Submit" onSubmit={AddFounds}>
+          <input
+            value={Addamount === undefined ? "" : Addamount}
+            onChange={(e) => {
+              setADDAmount(Number(e.target.value));
+            }}
+            type="number"
+          />
+          <button type="submit"></button>
+        </form>
+        <form action="Submit" onSubmit={WithdrawFounds}>
+          <input
+            value={WithdrawAmount === undefined ? "" : WithdrawAmount}
+            onChange={(e) => {
+              setWithdrawAmount(Number(e.target.value));
+            }}
+            type="number"
+          />
+          <button type="submit"></button>
+        </form>
       </div>
-      <div className="statBox">
-        <div className="addFounds">+</div>
-        <div className="balance">{balance}</div>
-      </div>
-      <div className="statBox">{investment}</div>
-
-      <form action="Submit" onSubmit={AddFounds}>
-        <input
-          value={Addamount === undefined ? "" : Addamount}
-          onChange={(e) => {
-            setADDAmount(Number(e.target.value));
-          }}
-          type="number"
-        />
-        <button type="submit"></button>
-      </form>
-      <form action="Submit" onSubmit={WithdrawFounds}>
-        <input
-          value={WithdrawAmount === undefined ? "" : WithdrawAmount}
-          onChange={(e) => {
-            setWithdrawAmount(Number(e.target.value));
-          }}
-          type="number"
-        />
-        <button type="submit"></button>
-      </form>
     </div>
   );
 }
