@@ -78,36 +78,45 @@ export default function Profile() {
       <div className="profile">
         <div className="profileHeader">
           <div className="profilePic">
-            <img src="" alt="" />
+            <img src="/poza_cv.jpg" alt="" />
           </div>
-          <h2 className="username"></h2>
+          <h2 className="username">Laza Lukas</h2>
         </div>
-        <div className="statBox">
-          <div className="addFounds">+</div>
-          <div className="balance">{balance}</div>
+        <div className="valueSection">
+          <div className="statBox">
+            <p className="valueTitle">Balance</p>
+            <div className="addFounds">+</div>
+            <div className="balance">{balance} $</div>
+          </div>
+          <div className="statBox">
+            <p className="valueTitle">Investments</p>
+            <div className="balance">{investment} $</div>
+          </div>
         </div>
-        <div className="statBox">{investment}</div>
-        <form action="Submit" onSubmit={AddFounds}>
-          <input
-            value={Addamount === undefined ? "" : Addamount}
-            onChange={(e) => {
-              setADDAmount(Number(e.target.value));
-            }}
-            type="number"
-          />
-          <button type="submit"></button>
-        </form>
-        <form action="Submit" onSubmit={WithdrawFounds}>
-          <input
-            value={WithdrawAmount === undefined ? "" : WithdrawAmount}
-            onChange={(e) => {
-              setWithdrawAmount(Number(e.target.value));
-            }}
-            type="number"
-          />
-          <button type="submit"></button>
-        </form>
       </div>
     </div>
   );
+}
+
+{
+  /* <form action="Submit" onSubmit={AddFounds}>
+  <input
+    value={Addamount === undefined ? "" : Addamount}
+    onChange={(e) => {
+      setADDAmount(Number(e.target.value));
+    }}
+    type="number"
+  />
+  <button type="submit"></button>
+</form>
+<form action="Submit" onSubmit={WithdrawFounds}>
+  <input
+    value={WithdrawAmount === undefined ? "" : WithdrawAmount}
+    onChange={(e) => {
+      setWithdrawAmount(Number(e.target.value));
+    }}
+    type="number"
+  />
+  <button type="submit"></button>
+</form> */
 }
