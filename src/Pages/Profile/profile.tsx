@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import WalletService from "../../Services/WalletService";
 import "./Profile.css";
+import PopUp from "../../Components/PopUp/PopUp";
 
 export default function Profile() {
   const [balance, setBalance] = useState<number>(0);
@@ -9,6 +10,7 @@ export default function Profile() {
   const [Addamount, setADDAmount] = useState<number>();
   const [WithdrawAmount, setWithdrawAmount] = useState<number>();
   const [investment, setInvestment] = useState<number>();
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     fetchBalance();
@@ -70,11 +72,13 @@ export default function Profile() {
     }
   };
 
+  // if (variabila) return PopUp();
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
   return (
     <div className="wraper">
+      {isOpen && <PopUp onClose={() => setIsOpen(false)} />}
       <div className="profile">
         <div className="profileHeader">
           <div className="profilePic">
@@ -93,6 +97,9 @@ export default function Profile() {
             <div className="balance">{investment} $</div>
           </div>
         </div>
+        <button className="btn" onClick={() => setIsOpen(true)}>
+          click
+        </button>
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import "./App.css";
 import Login from "./Pages/Login/Login";
 import SignUp from "./Pages/SignUp/signUp";
 import Profile from "./Pages/Profile/profile";
+import PopUp from "./Components/PopUp/PopUp";
 
 function App() {
   const router = createBrowserRouter([
@@ -10,6 +11,7 @@ function App() {
     { path: "Login", element: <Login /> },
     { path: "SignUp", element: <SignUp /> },
     { path: "Profile", element: <Profile /> },
+    { path: "POP", element: <PopUp /> },
   ]);
 
   return (
