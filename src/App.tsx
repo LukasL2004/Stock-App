@@ -3,7 +3,7 @@ import "./App.css";
 import Login from "./Pages/Login/Login";
 import SignUp from "./Pages/SignUp/signUp";
 import Profile from "./Pages/Profile/profile";
-import PopUp from "./Components/PopUp/PopUp";
+import PopUp from "./Components/PopUp/AddFoundsPopUp";
 
 function App() {
   const router = createBrowserRouter([

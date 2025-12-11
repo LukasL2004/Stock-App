@@ -46,6 +46,8 @@
   position: absolute;
   top: 0;
   font-size: 1.1rem;
+  right: 50%;
+  transform: translate(50%, -50%);
 }
 
 .balance {
@@ -54,8 +56,8 @@
 
 .addFounds {
   position: absolute;
-  top: 5px;
-  right: 10px;
+  top: 0px;
+  right: 5px;
   cursor: pointer;
   font-size: 2rem;
   font-weight: bold;
