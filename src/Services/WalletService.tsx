@@ -12,7 +12,7 @@ const WalletService = {
       const response: Response = await fetch(`${Api_URL}/balance`, {
         method: "GET",
         headers: {
-          "Content-Type": "aplication/json",
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
