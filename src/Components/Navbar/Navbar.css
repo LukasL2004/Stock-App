@@ -1,20 +1,67 @@
 .nav {
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
   align-items: center;
   background-color: rgb(64, 182, 93);
+  border-bottom: 2px solid black;
+  padding: 0 1rem;
+  border: 2px solid black;
+  width: 100%;
 }
 
-.profileImg {
-  height: 50px;
-  width: 50px;
-  border-radius: 100%;
-  margin: 0.5rem 1rem;
-}
-
-ul {
+.links {
   list-style: none;
   display: flex;
   gap: 4rem;
+}
+
+.links li {
+  cursor: pointer;
+}
+
+.links li:hover {
+  animation: scale 0.3s ease-in-out both;
+}
+
+@keyframes scale {
+  to {
+    transform: scale(1.2);
+  }
+}
+
+.profileWrapper {
+  position: relative;
+}
+
+.profileImg {
+  height: 45px;
+  width: 45px;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-right: 2.7rem;
+  padding: 0.3rem;
+}
+
+.dropdown {
+  position: absolute;
+  /* top: 60px; */
+  right: 0;
+  background-color: rgb(64, 182, 93);
+  border: 1px solid black;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  min-width: 140px;
+  z-index: 100;
+}
+
+.dropdownLink {
+  padding: 12px;
+  text-align: center;
+  cursor: pointer;
+  border-bottom: 1px solid black;
+}
+
+.dropdownLink:hover {
+  background-color: rgba(0, 0, 0, 0.1);
 }
