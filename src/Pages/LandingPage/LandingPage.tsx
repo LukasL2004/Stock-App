@@ -42,24 +42,47 @@ export default function LandingPage() {
   useEffect(() => {
     const fetchData = async () => {
       await getData();
+
+      const interval = setInterval(() => {
+        getData();
+      }, 15 * 60 * 1000);
+
+      return () => clearInterval(interval);
     };
 
     fetchData();
   }, []);
   return (
-    <div>
-      <h2>Stocks (5 min candles)</h2>
-
-      {symbols.map((symbol) => (
-        <div key={symbol}>
-          <strong>{symbol}</strong>
-          {candles[symbol] ? (
-            <p>Close: {candles[symbol].close}</p>
-          ) : (
-            <p>Loading...</p>
-          )}
-        </div>
-      ))}
+    <div className="main">
+      <div className="stockContainer">
+        <h1 className="title">Stocks</h1>
+        {symbols.map((Symbol) => (
+          <div className="stocks">
+            <p className="title">{Symbol}</p>
+            {candles[Symbol] ? (
+              <p className="stockPrice">{candles[Symbol].close}</p>
+            ) : (
+              <p>Loading...</p>
+            )}
+          </div>
+        ))}
+      </div>
+      <div className="displayContainer">
+        <div className="charts"></div>
+      </div>
     </div>
   );
+}
+
+{
+  /* {symbols.map((symbol) => (
+  <div key={symbol}>
+    <strong>{symbol}</strong>
+    {candles[symbol] ? (
+      <p>Close: {candles[symbol].close}</p>
+    ) : (
+      <p>Loading...</p>
+    )}
+  </div>
+))} */
 }

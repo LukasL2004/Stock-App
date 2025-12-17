@@ -17,7 +17,7 @@ const StockData = {
   CandlesData: async (StockName: string): Promise<Stock> => {
     try {
       const response: Response = await fetch(
-        `${API_URL}/time_series?symbol=${StockName}&interval=${INTERVAL}&outputsize=${OUTPUT_SIZE}&apikey=${API_KEY}`
+        `${API_URL}?time_series?symbol=${StockName}&interval=${INTERVAL}&outputsize=${OUTPUT_SIZE}&apikey=${API_KEY}`
       );
 
       if (!response.ok) {
