@@ -4,7 +4,9 @@ export interface Wallet {
 }
 
 export interface walletResponse {
+  id: number;
   balance: number;
+  investment: number;
 }
 
 export interface ChangeAmount {

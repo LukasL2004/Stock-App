@@ -1,6 +1,5 @@
 import type {
   ChangeAmount,
-  InvestmentAmount,
   walletResponse,
 } from "./Interfaces/WalletInterface";
 
@@ -24,26 +23,6 @@ const WalletService = {
       return data;
     } catch (error) {
       console.error("Error is ", error);
-      throw error;
-    }
-  },
-
-  Investment: async (token: string): Promise<InvestmentAmount> => {
-    try {
-      const response: Response = await fetch(`${Api_URL}/Investment`, {
-        method: "GET",
-        headers: {
-          "content-Type": "json-application",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Wallet doesn t found");
-      }
-      const data: InvestmentAmount = await response.json();
-      return data;
-    } catch (error) {
-      console.log(error);
       throw error;
     }
   },

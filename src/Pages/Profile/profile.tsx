@@ -26,8 +26,7 @@ export default function Profile() {
         throw new Error("You are not logged in");
       }
       const balanceResponse = await WalletService.Balance(token);
-      const investmentResponse = await WalletService.Investment(token);
-      setInvestment(investmentResponse.investment);
+      setInvestment(balanceResponse.investment);
       setBalance(balanceResponse.balance);
     } catch (error) {
       console.log(error);
