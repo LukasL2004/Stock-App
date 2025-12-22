@@ -15,11 +15,14 @@
   margin: 0;
   text-align: center;
   align-self: center;
+  border-bottom: 1px solid rgb(4, 18, 31);
 }
 
 .stockContainer {
   background-color: rgb(64, 182, 93);
   height: 50%;
+  overflow: auto;
+  width: 15%;
 }
 
 .stocks {
@@ -30,8 +33,13 @@
   align-self: center;
   width: 100%;
   padding: 0.4rem;
-  border: 1px solid rgb(4, 18, 31);
+  border-bottom: 1px solid rgb(4, 18, 31);
   text-align: center;
+  padding: 1rem 0;
+}
+
+.stocks p {
+  margin: 0rem 1rem;
 }
 
 .stockPrice {
