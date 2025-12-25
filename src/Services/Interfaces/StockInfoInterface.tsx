@@ -1,7 +1,10 @@
 export interface Stock {
-  datetime: string;
+  id: string;
+  symbol: string;
+  date: string;
+  price: string;
   open: string;
   high: string;
   low: string;
-  close: string;
+  volume: string;
 }
