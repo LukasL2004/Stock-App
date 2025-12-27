@@ -7,4 +7,5 @@ export interface Stock {
   high: string;
   low: string;
   volume: string;
+  status: string;
 }

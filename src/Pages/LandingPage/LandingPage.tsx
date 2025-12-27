@@ -5,6 +5,11 @@ import type { Stock } from "../../Services/Interfaces/StockInfoInterface";
 
 export default function LandingPage() {
   const [stock, setStock] = useState<Stock[]>();
+  const [name, setName] = useState<string>();
+
+  const getName = (symbol: string) => {
+    setName(symbol);
+  };
 
   useEffect(() => {
     const getData = async () => {
@@ -24,28 +29,18 @@ export default function LandingPage() {
         <h1 className="title">Stocks</h1>
         {stock?.map((Stock) => (
           <div className="stocks">
-            <p className="title">{Stock.symbol}</p>
+            <p onClick={() => getName(Stock.symbol)} className="title">
+              {Stock.symbol}
+            </p>
 
             <p className="stockPrice">{Stock.price}</p>
           </div>
         ))}
       </div>
       <div className="displayContainer">
+        <div className="display_title">{name}</div>
         <div className="charts"></div>
       </div>
     </div>
   );
-}
-
-{
-  /* {symbols.map((symbol) => (
-  <div key={symbol}>
-    <strong>{symbol}</strong>
-    {candles[symbol] ? (
-      <p>Close: {candles[symbol].close}</p>
-    ) : (
-      <p>Loading...</p>
-    )}
-  </div>
-))} */
 }
