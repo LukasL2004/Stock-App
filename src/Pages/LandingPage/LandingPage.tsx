@@ -5,10 +5,14 @@ import type { Stock } from "../../Services/Interfaces/StockInfoInterface";
 
 export default function LandingPage() {
   const [stock, setStock] = useState<Stock[]>();
-  const [name, setName] = useState<string>();
+  const [name, setName] = useState<string>("AAPL");
+  const [price, setPrice] = useState<string>();
+  const [status, setStatus] = useState<string>();
 
-  const getName = (symbol: string) => {
+  const getStockInfo = (symbol: string, price: string, status: string) => {
     setName(symbol);
+    setPrice(price);
+    setStatus(status);
   };
 
   useEffect(() => {
@@ -27,19 +31,34 @@ export default function LandingPage() {
     <div className="main">
       <div className="stockContainer">
         <h1 className="title">Stocks</h1>
-        {stock?.map((Stock) => (
-          <div className="stocks">
-            <p onClick={() => getName(Stock.symbol)} className="title">
-              {Stock.symbol}
-            </p>
-
-            <p className="stockPrice">{Stock.price}</p>
+        {stock?.map((stock) => (
+          <div
+            onClick={() =>
+              getStockInfo(stock.symbol, stock.price, stock.status)
+            }
+            className="stocks"
+          >
+            <p className="title">{stock.symbol}</p>
+            <p className="stockPrice">{stock.price}</p>
           </div>
         ))}
       </div>
       <div className="displayContainer">
-        <div className="display_title">{name}</div>
-        <div className="charts"></div>
+        <div className="stockHeader">
+          <div className="stockStatus">
+            <div className="displayTitle">{name}</div>
+            <div className="status">Status: {status}</div>
+          </div>
+          <div className="price">{price}</div>
+        </div>
+        <div className="charts">
+          <div className="graph"></div>
+          <div className="selectPeriod">
+            <div className="period">1 Day</div>
+            <div className="period">1 Week</div>
+            <div className="period">1 Month</div>
+          </div>
+        </div>
       </div>
     </div>
   );
