@@ -6,10 +6,10 @@ import type { Stock } from "../../Services/Interfaces/StockInfoInterface";
 export default function LandingPage() {
   const [stock, setStock] = useState<Stock[]>();
   const [name, setName] = useState<string>("AAPL");
-  const [price, setPrice] = useState<string>();
+  const [price, setPrice] = useState<number>();
   const [status, setStatus] = useState<string>();
 
-  const getStockInfo = (symbol: string, price: string, status: string) => {
+  const getStockInfo = (symbol: string, price: number, status: string) => {
     setName(symbol);
     setPrice(price);
     setStatus(status);
@@ -39,7 +39,7 @@ export default function LandingPage() {
             className="stocks"
           >
             <p className="title">{stock.symbol}</p>
-            <p className="stockPrice">{stock.price}</p>
+            <p className="stockPrice">{stock.price} $</p>
           </div>
         ))}
       </div>
@@ -49,7 +49,7 @@ export default function LandingPage() {
             <div className="displayTitle">{name}</div>
             <div className="status">Status: {status}</div>
           </div>
-          <div className="price">{price}</div>
+          <div className="price">{price} $</div>
         </div>
         <div className="charts">
           <div className="graph"></div>
