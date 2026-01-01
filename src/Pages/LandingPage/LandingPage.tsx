@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import StockData from "../../Services/StockInfoService";
 import "./LandingPage.css";
 import type { Stock } from "../../Services/Interfaces/StockInfoInterface";
+import Charts from "../../Components/Charts/Charts";
 
 export default function LandingPage() {
   const [stock, setStock] = useState<Stock[]>();
@@ -52,7 +53,9 @@ export default function LandingPage() {
           <div className="price">{price} $</div>
         </div>
         <div className="charts">
-          <div className="graph"></div>
+          <div className="graph">
+            <Charts name={name}></Charts>
+          </div>
           <div className="selectPeriod">
             <div className="period">1 Day</div>
             <div className="period">1 Week</div>

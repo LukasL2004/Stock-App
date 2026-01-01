@@ -9,3 +9,10 @@ export interface Stock {
   volume: string;
   status: string;
 }
+
+export interface Chart {
+  symbol: string;
+  date: string;
+  time: string;
+  value: number;
+}
