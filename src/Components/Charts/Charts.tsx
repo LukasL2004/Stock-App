@@ -31,8 +31,8 @@ export default function Charts({ name }: ChartProps) {
     if (!chartContainerRef.current || data.length === 0) return;
 
     const chart = createChart(chartContainerRef.current, {
-      width: 800,
-      height: 400,
+      width: 550,
+      height: 300,
 
       layout: {
         background: { color: "#000" },

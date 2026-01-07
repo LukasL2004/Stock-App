@@ -13,6 +13,11 @@ export interface buy {
   amountInvested: number;
 }
 
+export interface stockPrice {
+  symbol: string;
+  currentPrice: number;
+}
+
 export interface sell {
   symbol: string;
   currentPrice: number;

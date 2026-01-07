@@ -3,12 +3,14 @@ import StockData from "../../Services/StockInfoService";
 import "./LandingPage.css";
 import type { Stock } from "../../Services/Interfaces/StockInfoInterface";
 import Charts from "../../Components/Charts/Charts";
+import BuyPopUp from "../../Components/PopUp/BuyPopUp";
 
 export default function LandingPage() {
   const [stock, setStock] = useState<Stock[]>();
   const [name, setName] = useState<string>("AAPL");
   const [price, setPrice] = useState<number>();
   const [status, setStatus] = useState<string>();
+  const [closed, setClosed] = useState<boolean>(false);
 
   const getStockInfo = (symbol: string, price: number, status: string) => {
     setName(symbol);
@@ -30,6 +32,13 @@ export default function LandingPage() {
 
   return (
     <div className="main">
+      {closed && (
+        <BuyPopUp
+          Symbol={name}
+          currentPrice={price!}
+          closed={() => setClosed(false)}
+        ></BuyPopUp>
+      )}
       <div className="stockContainer">
         <h1 className="title">Stocks</h1>
         {stock?.map((stock) => (
@@ -57,9 +66,9 @@ export default function LandingPage() {
             <Charts name={name}></Charts>
           </div>
           <div className="selectPeriod">
-            <div className="period">1 Day</div>
-            <div className="period">1 Week</div>
-            <div className="period">1 Month</div>
+            <button onClick={() => setClosed(true)} className="buyBtn">
+              buy
+            </button>
           </div>
         </div>
       </div>
