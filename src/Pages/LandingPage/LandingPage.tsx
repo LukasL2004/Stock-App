@@ -4,13 +4,15 @@ import "./LandingPage.css";
 import type { Stock } from "../../Services/Interfaces/StockInfoInterface";
 import Charts from "../../Components/Charts/Charts";
 import BuyPopUp from "../../Components/PopUp/BuyPopUp";
+import SellPopUp from "../../Components/PopUp/SellPopUp";
 
 export default function LandingPage() {
   const [stock, setStock] = useState<Stock[]>();
   const [name, setName] = useState<string>("AAPL");
   const [price, setPrice] = useState<number>();
   const [status, setStatus] = useState<string>();
-  const [closed, setClosed] = useState<boolean>(false);
+  const [closedBuy, setClosedBuy] = useState<boolean>(false);
+  const [closedSell, setClosedSell] = useState<boolean>(false);
 
   const getStockInfo = (symbol: string, price: number, status: string) => {
     setName(symbol);
@@ -32,12 +34,19 @@ export default function LandingPage() {
 
   return (
     <div className="main">
-      {closed && (
+      {closedBuy && (
         <BuyPopUp
           Symbol={name}
           currentPrice={price!}
-          closed={() => setClosed(false)}
+          closed={() => setClosedBuy(false)}
         ></BuyPopUp>
+      )}
+      {closedSell && (
+        <SellPopUp
+          symbol={name}
+          currentPrice={price!}
+          closed={() => setClosedSell(false)}
+        ></SellPopUp>
       )}
       <div className="stockContainer">
         <h1 className="title">Stocks</h1>
@@ -66,8 +75,11 @@ export default function LandingPage() {
             <Charts name={name}></Charts>
           </div>
           <div className="selectPeriod">
-            <button onClick={() => setClosed(true)} className="buyBtn">
+            <button onClick={() => setClosedBuy(true)} className="buyBtn">
               buy
+            </button>
+            <button onClick={() => setClosedSell(true)} className="buyBtn">
+              Sell
             </button>
           </div>
         </div>

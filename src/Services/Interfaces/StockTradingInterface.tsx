@@ -10,7 +10,7 @@ export interface portofolio {
 export interface buy {
   symbol: string;
   currentPrice: number;
-  amountInvested: number;
+  amountToInvest: number;
 }
 
 export interface stockPrice {

@@ -9,7 +9,7 @@ const StockData = {
       const response = await fetch(`${API_URL}/values`, {
         method: "GET",
         headers: {
-          "content-Type": "application/json",
+          "content-type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });

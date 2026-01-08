@@ -1,15 +1,15 @@
 import type { buy, portofolio, sell } from "./Interfaces/StockTradingInterface";
 
 const API_URL = "http://localhost:8080/api/portofolio";
-const token = localStorage.getItem("token");
 
 const Trading = {
   buy: async (buyData: buy): Promise<portofolio> => {
+    const token = localStorage.getItem("token");
     try {
       const response: Response = await fetch(`${API_URL}/buy`, {
         method: "POST",
         headers: {
-          "content-Type": "application/json",
+          "content-type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(buyData),
@@ -28,11 +28,12 @@ const Trading = {
   },
   sell: async (sellData: sell): Promise<portofolio> => {
     try {
-      const response: Response = await fetch(`${API_URL}/buy`, {
+      const token = localStorage.getItem("token");
+      const response: Response = await fetch(`${API_URL}/sell`, {
         method: "POST",
         headers: {
           "content-type": "application/json",
-          Authorization: `bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(sellData),
       });

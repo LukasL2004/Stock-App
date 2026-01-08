@@ -12,7 +12,7 @@ export default function BuyPopUp(buyProps: buyProps) {
   const [Buy, setBuy] = useState<buy>({
     symbol: buyProps.Symbol,
     currentPrice: buyProps.currentPrice,
-    amountInvested: 0,
+    amountToInvest: 0,
   });
 
   const handleBuy = async (e: React.FormEvent) => {
@@ -43,13 +43,13 @@ export default function BuyPopUp(buyProps: buyProps) {
         <form onSubmit={handleBuy}>
           <label htmlFor="">Please enter the sum you want to invest</label>
           <input
-            value={Buy.amountInvested === undefined ? "" : Buy.amountInvested}
+            value={Buy.amountToInvest === undefined ? "" : Buy.amountToInvest}
             onChange={(e) => {
               e.preventDefault();
               setBuy({
                 symbol: buyProps.Symbol,
                 currentPrice: buyProps.currentPrice,
-                amountInvested: Number(e.target.value),
+                amountToInvest: Number(e.target.value),
               });
             }}
             className="addFoundsInput"
