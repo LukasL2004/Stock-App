@@ -5,6 +5,8 @@ import type { Stock } from "../../Services/Interfaces/StockInfoInterface";
 import Charts from "../../Components/Charts/Charts";
 import BuyPopUp from "../../Components/PopUp/BuyPopUp";
 import SellPopUp from "../../Components/PopUp/SellPopUp";
+import type { portofolioData } from "../../Services/Interfaces/PortofolioInterface";
+import Portofolio from "../../Services/PortofolioService";
 
 export default function LandingPage() {
   const [stock, setStock] = useState<Stock[]>();
@@ -13,6 +15,10 @@ export default function LandingPage() {
   const [status, setStatus] = useState<string>();
   const [closedBuy, setClosedBuy] = useState<boolean>(false);
   const [closedSell, setClosedSell] = useState<boolean>(false);
+  const [portofolio, setPortofolio] = useState<portofolioData>();
+  // const [shares, setShares] = useState<number>(0);
+  // const [amountOwned, setAmountOwned] = useState<number>(0);
+  // const [averagePrice, setAveragePrice] = useState<number>(0);
 
   const getStockInfo = (symbol: string, price: number, status: string) => {
     setName(symbol);
@@ -20,17 +26,29 @@ export default function LandingPage() {
     setStatus(status);
   };
 
+  // const getPortofolioData = (
+  //   shares: number,
+  //   amountOwned: number,
+  //   averagePrice: number
+  // ) => {
+  //   setShares(shares);
+  //   setAmountOwned(amountOwned);
+  //   setAveragePrice(averagePrice);
+  // };
+
   useEffect(() => {
     const getData = async () => {
       try {
         const response = await StockData.stocks();
+        const portofolioResponse = await Portofolio.getData(name);
+        setPortofolio(portofolioResponse);
         setStock(response);
       } catch (Error) {
         console.log(Error);
       }
     };
     getData();
-  }, []);
+  }, [name]);
 
   return (
     <div className="main">
@@ -81,6 +99,11 @@ export default function LandingPage() {
             <button onClick={() => setClosedSell(true)} className="buyBtn">
               Sell
             </button>
+          </div>
+          <div className="stats">
+            <div className="avr">{portofolio?.averagePrice}</div>
+            <div className="shares">{portofolio?.shares}</div>
+            <div className="amountOwend">{portofolio?.amountOwned}</div>
           </div>
         </div>
       </div>
