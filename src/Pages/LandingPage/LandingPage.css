@@ -52,6 +52,7 @@
   height: 50%;
   width: 40%;
   overflow: auto;
+  overflow: auto;
 }
 
 .stockHeader {
@@ -68,6 +69,7 @@
   font-size: 1.5rem;
   display: flex;
   align-items: center;
+  margin: 0;
 }
 
 .charts {
@@ -78,6 +80,7 @@
   justify-content: center;
   align-self: center;
   flex-direction: column;
+  margin-top: 3rem;
 }
 
 .graph {

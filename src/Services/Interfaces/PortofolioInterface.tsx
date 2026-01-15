@@ -3,5 +3,6 @@ export interface portofolioData {
   averagePrice: number;
   amountOwned: number;
   shares: number;
+  profit: number;
   userId: number;
 }

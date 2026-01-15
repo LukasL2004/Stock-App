@@ -7,6 +7,7 @@ import BuyPopUp from "../../Components/PopUp/BuyPopUp";
 import SellPopUp from "../../Components/PopUp/SellPopUp";
 import type { portofolioData } from "../../Services/Interfaces/PortofolioInterface";
 import Portofolio from "../../Services/PortofolioService";
+import type { total } from "../../Services/Interfaces/TotalInterface";
 
 export default function LandingPage() {
   const [stock, setStock] = useState<Stock[]>();
@@ -16,6 +17,7 @@ export default function LandingPage() {
   const [closedBuy, setClosedBuy] = useState<boolean>(false);
   const [closedSell, setClosedSell] = useState<boolean>(false);
   const [portofolio, setPortofolio] = useState<portofolioData>();
+  const [total, setTotal] = useState<total>();
   // const [shares, setShares] = useState<number>(0);
   // const [amountOwned, setAmountOwned] = useState<number>(0);
   // const [averagePrice, setAveragePrice] = useState<number>(0);
@@ -41,6 +43,8 @@ export default function LandingPage() {
       try {
         const response = await StockData.stocks();
         const portofolioResponse = await Portofolio.getData(name);
+        const total = await Portofolio.getTotal();
+        setTotal(total);
         setPortofolio(portofolioResponse);
         setStock(response);
       } catch (Error) {
@@ -101,9 +105,13 @@ export default function LandingPage() {
             </button>
           </div>
           <div className="stats">
-            <div className="avr">{portofolio?.averagePrice}</div>
-            <div className="shares">{portofolio?.shares}</div>
-            <div className="amountOwend">{portofolio?.amountOwned}</div>
+            <div className="avr">Average Price: {portofolio?.averagePrice}</div>
+            <div className="shares">Shares: {portofolio?.shares}</div>
+            <div className="shares">Profit: {portofolio?.profit}</div>
+            <div className="shares">Total: {total?.total}</div>
+            <div className="amountOwend">
+              Amount Owned: {portofolio?.amountOwned}
+            </div>
           </div>
         </div>
       </div>
