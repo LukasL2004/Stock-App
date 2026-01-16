@@ -111,6 +111,10 @@ export default function LandingPage() {
             <div className="shares">Total: {total?.total}</div>
             <div className="amountOwend">
               Amount Owned: {portofolio?.amountOwned}
+              percentage :{" "}
+              {total?.portfolioChart.map((chart) => (
+                <div>{chart.percentage}</div>
+              ))}
             </div>
           </div>
         </div>
