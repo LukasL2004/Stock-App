@@ -3,11 +3,14 @@ import WalletService from "../../Services/WalletService";
 import "./Profile.css";
 import AddFoundsPopUp from "../../Components/PopUp/AddFoundsPopUp";
 import WithdrawPopUp from "../../Components/PopUp/WithdrawPopUp";
+import AuditLog from "../../Services/AuditLogService";
+import type { AuditLogInterface } from "../../Services/Interfaces/AuditLogInterface";
 
 export default function Profile() {
   const [balance, setBalance] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
+  const [audit, setAudit] = useState<AuditLogInterface[]>();
 
   const [investment, setInvestment] = useState<number>();
   const [addFoundPop, setAddFoundPop] = useState(false);
@@ -15,7 +18,17 @@ export default function Profile() {
 
   useEffect(() => {
     fetchBalance();
+    GetAudit();
   }, []);
+
+  const GetAudit = async () => {
+    try {
+      const response = await AuditLog.GetAudit();
+      setAudit(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const fetchBalance = async () => {
     try {
@@ -83,22 +96,36 @@ export default function Profile() {
 {
   /* <form action="Submit" onSubmit={AddFounds}>
   <input
-    value={Addamount === undefined ? "" : Addamount}
-    onChange={(e) => {
-      setADDAmount(Number(e.target.value));
-    }}
-    type="number"
+  value={Addamount === undefined ? "" : Addamount}
+  onChange={(e) => {
+    setADDAmount(Number(e.target.value));
+  }}
+  type="number"
   />
   <button type="submit"></button>
-</form>
+  </form>
 <form action="Submit" onSubmit={WithdrawFounds}>
-  <input
-    value={WithdrawAmount === undefined ? "" : WithdrawAmount}
-    onChange={(e) => {
-      setWithdrawAmount(Number(e.target.value));
-    }}
-    type="number"
-  />
-  <button type="submit"></button>
+<input
+value={WithdrawAmount === undefined ? "" : WithdrawAmount}
+onChange={(e) => {
+  setWithdrawAmount(Number(e.target.value));
+}}
+type="number"
+/>
+<button type="submit"></button>
 </form> */
+}
+
+{
+  /* <div className="audit">
+  {audit?.map((aud) => (
+    <div>
+      <div>{aud.date}</div>
+      <div>{aud.price}</div>
+      <div>{aud.shares}</div>
+      <div>{aud.symbol}</div>
+      <div>{aud.total}</div>
+    </div>
+  ))}
+</div> */
 }
