@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Trading from "../../Services/StockTradingService";
-import type { sell } from "../../Services/Interfaces/StockTradingInterface";
+import Trading from "../../../Services/StockTradingService";
+import type { sell } from "../../../Services/Interfaces/StockTradingInterface";
 interface sellProps {
   symbol: string;
   currentPrice: number;

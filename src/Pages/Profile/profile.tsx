@@ -1,34 +1,23 @@
 import { useEffect, useState } from "react";
 import WalletService from "../../Services/WalletService";
 import "./Profile.css";
-import AddFoundsPopUp from "../../Components/PopUp/AddFoundsPopUp";
-import WithdrawPopUp from "../../Components/PopUp/WithdrawPopUp";
-import AuditLog from "../../Services/AuditLogService";
-import type { AuditLogInterface } from "../../Services/Interfaces/AuditLogInterface";
+import AddFoundsPopUp from "../../Components/PopUp/FinancePops/AddFoundsPopUp";
+import WithdrawPopUp from "../../Components/PopUp/FinancePops/WithdrawPopUp";
+import AuditLogPop from "../../Components/PopUp/AuditLogPop/AuditLogPop";
 
 export default function Profile() {
   const [balance, setBalance] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-  const [audit, setAudit] = useState<AuditLogInterface[]>();
 
   const [investment, setInvestment] = useState<number>();
   const [addFoundPop, setAddFoundPop] = useState(false);
   const [withdrawFoundPop, setwithdrawFoundPop] = useState(false);
+  const [auditLogPop, setAuditLogPop] = useState(false);
 
   useEffect(() => {
     fetchBalance();
-    GetAudit();
   }, []);
-
-  const GetAudit = async () => {
-    try {
-      const response = await AuditLog.GetAudit();
-      setAudit(response);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const fetchBalance = async () => {
     try {
@@ -62,6 +51,9 @@ export default function Profile() {
           }}
         />
       )}
+      {auditLogPop && (
+        <AuditLogPop closed={() => setAuditLogPop(false)}></AuditLogPop>
+      )}
       <div className="profile">
         <div className="profileHeader">
           <div className="profilePic">
@@ -87,6 +79,9 @@ export default function Profile() {
         </button>
         <button className="btn" onClick={() => setwithdrawFoundPop(true)}>
           Withdraw
+        </button>
+        <button className="btn" onClick={() => setAuditLogPop(true)}>
+          Audit
         </button>
       </div>
     </div>

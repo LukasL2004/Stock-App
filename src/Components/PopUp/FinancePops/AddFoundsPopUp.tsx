@@ -1,6 +1,6 @@
 import { useState } from "react";
-import "../PopUp/PopUp.css";
-import WalletService from "../../Services/WalletService";
+import "../../PopUp/PopUp.css";
+import WalletService from "../../../Services/WalletService";
 
 type PopUpProps = {
   onClose: () => void;
@@ -14,7 +14,7 @@ export default function AddFoundsPopUp({ onClose }: PopUpProps) {
     try {
       if (!token) {
         throw new Error(
-          "Sorry an error ocurred please log in again and try again"
+          "Sorry an error ocurred please log in again and try again",
         );
       }
       const response = await WalletService.AddFounds(token, amount);

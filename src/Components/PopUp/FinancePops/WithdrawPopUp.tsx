@@ -1,6 +1,6 @@
 import { useState } from "react";
-import "./PopUp.css";
-import WalletService from "../../Services/WalletService";
+import "../../PopUp/PopUp.css";
+import WalletService from "../../../Services/WalletService";
 
 type PopUpProps = {
   onClose: () => void;

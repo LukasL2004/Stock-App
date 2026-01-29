@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Trading from "../../Services/StockTradingService";
-import type { buy } from "../../Services/Interfaces/StockTradingInterface";
+import Trading from "../../../Services/StockTradingService";
+import type { buy } from "../../../Services/Interfaces/StockTradingInterface";
 
 interface buyProps {
   Symbol: string;
@@ -19,7 +19,6 @@ export default function BuyPopUp(buyProps: buyProps) {
     e.preventDefault();
 
     try {
-      console.log("Sending request...", Buy);
       const response = await Trading.buy(Buy);
       console.log("Success:", response);
       buyProps.closed();
