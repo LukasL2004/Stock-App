@@ -13,6 +13,7 @@ export default function Navbar() {
   function logOut() {
     navigate("/Login");
     localStorage.removeItem("token");
+    localStorage.removeItem("email");
   }
 
   function Home() {

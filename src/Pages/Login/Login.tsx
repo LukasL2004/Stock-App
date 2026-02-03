@@ -26,6 +26,7 @@ export default function Login() {
       const response = await authSercice.login(formData);
       navigate("/Profile");
       console.log(response);
+      localStorage.setItem("email", formData.email);
     } catch (error) {
       console.log(error);
     }

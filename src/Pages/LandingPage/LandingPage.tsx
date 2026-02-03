@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import StockData from "../../Services/StockInfoService";
 import "./LandingPage.css";
 import type { Stock } from "../../Services/Interfaces/StockInfoInterface";
@@ -8,6 +8,8 @@ import SellPopUp from "../../Components/PopUp/FinancePops/SellPopUp";
 import type { portofolioData } from "../../Services/Interfaces/PortofolioInterface";
 import Portofolio from "../../Services/PortofolioService";
 import type { total } from "../../Services/Interfaces/TotalInterface";
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
 
 export default function LandingPage() {
   const [stock, setStock] = useState<Stock[]>();
@@ -18,9 +20,6 @@ export default function LandingPage() {
   const [closedSell, setClosedSell] = useState<boolean>(false);
   const [portofolio, setPortofolio] = useState<portofolioData>();
   const [total, setTotal] = useState<total>();
-  // const [shares, setShares] = useState<number>(0);
-  // const [amountOwned, setAmountOwned] = useState<number>(0);
-  // const [averagePrice, setAveragePrice] = useState<number>(0);
 
   const getStockInfo = (symbol: string, price: number, status: string) => {
     setName(symbol);
@@ -28,31 +27,58 @@ export default function LandingPage() {
     setStatus(status);
   };
 
-  // const getPortofolioData = (
-  //   shares: number,
-  //   amountOwned: number,
-  //   averagePrice: number
-  // ) => {
-  //   setShares(shares);
-  //   setAmountOwned(amountOwned);
-  //   setAveragePrice(averagePrice);
-  // };
+  const fetchData = useCallback(async () => {
+    try {
+      const stocksRes = await StockData.stocks();
+      setStock(stocksRes);
+    } catch (err) {
+      console.error(err);
+    }
+    try {
+      const portfolioRes = await Portofolio.getData(name);
+      setPortofolio(portfolioRes);
+    } catch (err) {
+      console.warn(err);
+    }
+
+    try {
+      const totalRes = await Portofolio.getTotal();
+      setTotal(totalRes);
+    } catch (err) {
+      console.warn(err);
+    }
+  }, [name]);
 
   useEffect(() => {
-    const getData = async () => {
-      try {
-        const response = await StockData.stocks();
-        const portofolioResponse = await Portofolio.getData(name);
-        const total = await Portofolio.getTotal();
-        setTotal(total);
-        setPortofolio(portofolioResponse);
-        setStock(response);
-      } catch (Error) {
-        console.log(Error);
+    setTimeout(() => {
+      fetchData().catch((e) => console.log(e));
+    }, 0);
+  }, [fetchData]);
+
+  useEffect(() => {
+    const socket = new SockJS("http://localhost:8080/ws");
+    const client = Stomp.over(socket);
+    const email = localStorage.getItem("email");
+    client.connect(
+      {},
+      (frame) => {
+        console.log("Your socket is connected", frame);
+
+        client.subscribe(`/topic/${email}`, (message) => {
+          console.log("Update received:", message);
+          fetchData();
+        });
+      },
+      (error) => {
+        console.error(error);
+      },
+    );
+    return () => {
+      if (client && client.connected) {
+        client.disconnect(() => console.log("unsubscribed"));
       }
     };
-    getData();
-  }, [name]);
+  }, [fetchData]);
 
   return (
     <div className="main">
@@ -74,6 +100,7 @@ export default function LandingPage() {
         <h1 className="title">Stocks</h1>
         {stock?.map((stock) => (
           <div
+            key={stock.symbol}
             onClick={() =>
               getStockInfo(stock.symbol, stock.price, stock.status)
             }
