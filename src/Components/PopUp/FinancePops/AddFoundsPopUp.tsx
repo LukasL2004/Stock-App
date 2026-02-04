@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import "../../PopUp/PopUp.css";
 import WalletService from "../../../Services/WalletService";
 
@@ -10,7 +10,8 @@ export default function AddFoundsPopUp({ onClose }: PopUpProps) {
   const [amount, setAmount] = useState(0);
   const token = localStorage.getItem("token");
 
-  const addFoundsInput = async () => {
+  const addFoundsInput = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
       if (!token) {
         throw new Error(
@@ -18,6 +19,7 @@ export default function AddFoundsPopUp({ onClose }: PopUpProps) {
         );
       }
       const response = await WalletService.AddFounds(token, amount);
+      onClose();
       if (!response) {
         throw new Error("Sorry an error ocurred please try again later");
       }
@@ -49,7 +51,9 @@ export default function AddFoundsPopUp({ onClose }: PopUpProps) {
             className="addFoundsInput"
             type="number"
           />
-          <button className="btn">Add Founds</button>
+          <button type="submit" className="btn">
+            Add Founds
+          </button>
         </form>
       </div>
     </div>

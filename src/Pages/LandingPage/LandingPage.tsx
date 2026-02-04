@@ -28,6 +28,7 @@ export default function LandingPage() {
   };
 
   const fetchData = useCallback(async () => {
+    //Better than promise all cuz if one fails the other 2 will still work
     try {
       const stocksRes = await StockData.stocks();
       setStock(stocksRes);
