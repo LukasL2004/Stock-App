@@ -10,6 +10,7 @@ import SignUp from "./Pages/SignUp/signUp";
 import Profile from "./Pages/Profile/profile";
 import LandingPage from "./Pages/LandingPage/LandingPage";
 import Navbar from "./Components/Navbar/Navbar";
+import ForgotPassword from "./Pages/ForgotPassword/ForgotPassword";
 
 function LayoutWithNavbar() {
   return (
@@ -25,6 +26,7 @@ function App() {
     { path: "/", loader: () => redirect("/Login") },
     { path: "Login", element: <Login /> },
     { path: "SignUp", element: <SignUp /> },
+    { path: "ForgotPassword", element: <ForgotPassword /> },
 
     {
       path: "/",

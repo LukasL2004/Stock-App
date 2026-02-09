@@ -14,3 +14,13 @@ export interface AuthResponse {
   token: string;
   message?: string;
 }
+
+export interface ForgotPassword {
+  email: string;
+}
+
+export interface resetPassword {
+  email: string;
+  password: string;
+  code: string;
+}

@@ -1,4 +1,9 @@
-import { type AuthResponse, type Login } from "./Interfaces/UserInterface";
+import {
+  type AuthResponse,
+  type ForgotPassword,
+  type Login,
+  type resetPassword,
+} from "./Interfaces/UserInterface";
 
 const API_URL = "http://localhost:8080/api/users";
 
@@ -45,6 +50,43 @@ const authService = {
     } catch (error) {
       console.error("error is: ", error);
       throw error;
+    }
+  },
+  ForgotPassword: async (credentials: ForgotPassword): Promise<string> => {
+    try {
+      const response: Response = await fetch(`${API_URL}/forgotPassword`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(credentials),
+      });
+      if (!response.ok) {
+        throw new Error("Sorry the email was not found");
+      }
+
+      const data = await response.text();
+      return data;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  },
+  ResetPassword: async (reset: resetPassword): Promise<string> => {
+    try {
+      const response: Response = await fetch(`${API_URL}/resetPassword`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(reset),
+      });
+
+      if (!response.ok) {
+        throw new Error("Sorry wrong credentials");
+      }
+
+      const data = await response.text();
+      return data;
+    } catch (e) {
+      console.log(e);
+      throw e;
     }
   },
 };
