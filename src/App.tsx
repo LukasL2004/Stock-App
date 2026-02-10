@@ -11,6 +11,7 @@ import Profile from "./Pages/Profile/profile";
 import LandingPage from "./Pages/LandingPage/LandingPage";
 import Navbar from "./Components/Navbar/Navbar";
 import ForgotPassword from "./Pages/ForgotPassword/ForgotPassword";
+import Wallet from "./Pages/Wallet/Wallet";
 
 function LayoutWithNavbar() {
   return (
@@ -34,6 +35,7 @@ function App() {
       children: [
         { path: "Profile", element: <Profile /> },
         { path: "LandingPage", element: <LandingPage /> },
+        { path: "Wallet", element: <Wallet /> },
       ],
     },
   ]);

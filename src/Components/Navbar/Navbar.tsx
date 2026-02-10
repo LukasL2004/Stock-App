@@ -15,6 +15,9 @@ export default function Navbar() {
     localStorage.removeItem("token");
     localStorage.removeItem("email");
   }
+  const toLogOut = () => {
+    navigate("/Wallet");
+  };
 
   function Home() {
     navigate("/LandingPage");
@@ -28,7 +31,7 @@ export default function Navbar() {
 
       <ul className="links">
         <li onClick={Home}>Home</li>
-        <li>Wallet</li>
+        <li onClick={toLogOut}>Wallet</li>
         <li>Your chart</li>
       </ul>
 

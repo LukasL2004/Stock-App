@@ -1,0 +1,34 @@
+.main {
+  height: 100vh;
+  width: 100vw;
+  background-color: #303130;
+  position: relative;
+}
+.walletContainer {
+  height: 70%;
+  width: 25%;
+  background-color: rgb(64, 182, 93);
+  display: flex;
+  justify-content: start;
+  text-align: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chart {
+  width: 50%;
+  height: 35%;
+  background-color: aqua;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inChart {
+  width: 90%;
+  height: 90%;
+  background-color: black;
+  border-radius: 100%;
+  color: #fff;
+}
