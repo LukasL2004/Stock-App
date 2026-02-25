@@ -1,116 +1,131 @@
 .login {
-  width: 100%;
+  width: 100vw;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  isolation: isolate;
+  background-color: #f6f7f8;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
 }
 
-.box {
-  width: 60vw;
-  height: 100%;
-  background-image: url(/public/stock_improved.png);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-}
-
-.loginBox {
-  z-index: -1000;
-  width: 40vw;
-  height: 100%;
-  background: rgb(4, 18, 31);
+.loginPage {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.container {
-  position: relative;
-  background: rgb(57, 234, 100);
-  display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: #ffff;
-  border-radius: 30px;
-}
-
-.container::after {
-  content: "";
-  width: 100%;
-  background-image: conic-gradient(from var(--angle), transparent 60%, #05bd05);
-  height: 100%;
-  z-index: -100;
-  position: absolute;
-  padding: 0.1rem;
-  border-radius: 30px;
-  animation: spin 3s linear infinite;
-  filter: blur(15px);
-}
-
-@property --angle {
-  syntax: "<angle>";
-  initial-value: 0deg;
-  inherits: false;
-}
-
-@keyframes spin {
-  0% {
-    --angle: 0deg;
-  }
-  100% {
-    --angle: 360deg;
-  }
-}
-
-.switch {
-  display: flex;
-  justify-content: space-evenly;
-  cursor: pointer;
-}
-
-.openedBtn {
-  transform: scale(1.2);
-}
-
-form {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  width: 80%;
-  /* gap: 0.5rem; */
-  padding: 1rem 2rem;
-  color: #000;
-  isolation: isolate;
-}
-
-form h1 {
-  justify-content: center;
+  width: 100vw;
+  height: 100vh;
   text-align: center;
 }
 
-form label {
-  font-weight: bold;
+.loginIcon {
+  padding: 1rem;
+  border-radius: 20px;
+  background-color: #136dec;
+  font-size: 1.5rem;
+  color: #ffffff;
+  box-shadow: 0 0 10px #136dec;
 }
 
-form input {
-  padding: 5px;
-  border: 0;
-  outline: 0;
-  gap: 0.5rem;
-  margin: 0.5rem;
+.loginContainer {
+  background-color: #ffffff;
+  width: 22%;
+  min-width: 350px;
+  border-radius: 20px;
+  padding: 1rem 0 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
 }
 
-.btn {
-  align-self: center;
-  width: 60%;
-  padding: 0.3rem 0.7rem;
-  background-color: rgb(6, 209, 40);
-  border: 0;
-  border-radius: 10px;
-  margin-top: 1rem;
-  font-size: 1.1rem;
+.loginContainer .email {
+  text-align: start;
+}
+
+.loginInp {
+  background-color: #f8fafc;
+  border: 1.5px solid #e9edf3;
+  border-radius: 5px;
+  margin-bottom: 1.4rem;
+}
+
+.loginPass {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.loginPass p {
+  margin: 0;
+}
+
+.forgot {
+  color: #136dec;
   cursor: pointer;
+}
+
+.remember {
+  display: flex;
+}
+
+.loginBtn {
+  background-color: #136dec;
+  color: #ffffff;
+  width: 100%;
+  padding: 0.5rem;
+  border: 0;
+  font-size: 1.1rem;
+  border-radius: 10px;
+}
+
+.others {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+.thirdParty {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.3rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.thirdParty p {
+  margin: 0;
+}
+
+.compIcon {
+  font-size: 1.4rem;
+}
+
+.toSignIn {
+  display: flex;
+  gap: 0.2rem;
+  background-color: #e3edf7;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.2rem;
+  border-top: 2px solid #c3d8ec;
+}
+.toSignInBtn {
+  cursor: pointer;
+  color: #136dec;
+}
+
+.credentials {
+  color: #a2a9b6;
+}
+
+@media screen and (max-width: 380px) {
+  .loginContainer {
+    min-width: 300px;
+  }
+  .welocomeMsg {
+    font-size: 0.95rem;
+  }
 }

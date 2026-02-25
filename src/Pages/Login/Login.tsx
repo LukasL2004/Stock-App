@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "./login.css";
-
+import { FcGoogle } from "react-icons/fc";
+import { MdOutlineTrendingUp } from "react-icons/md";
+import { FaApple } from "react-icons/fa";
 import authSercice from "../../Services/UserService";
 import type { Login } from "../../Services/Interfaces/UserInterface";
 import { useNavigate } from "react-router";
@@ -34,37 +36,63 @@ export default function Login() {
 
   return (
     <div className="login">
-      <div className="box"></div>
-      <div className="loginBox">
-        <div className="container">
+      <div className="loginPage">
+        <MdOutlineTrendingUp className="loginIcon" />
+        <h1 className="LoginTitle">WealthGrow</h1>
+        <p className="welocomeMsg">
+          Welcome back. Please login in your portofolio
+        </p>
+        <div className="loginContainer">
           <form onSubmit={submitHendler}>
-            <div className="switch">
-              <h1 className="openedBtn">Login</h1>
-              <h1>|</h1>
-              <h1 onClick={toSignUp}>Sign up</h1>
-            </div>
-            <h1>STOCKER</h1>
-            <h3>Join us today to grow your wealth</h3>
             {error}
-            <label htmlFor="Email">Email</label>
+            <label className="email" htmlFor="Email">
+              Email
+            </label>
             <input
+              className="loginInp"
               type="email"
               value={formData.email}
               onChange={(e) =>
                 setFormData({ ...formData, email: e.target.value })
               }
             />
-            <label htmlFor="Password">Password</label>
+            <div className="loginPass">
+              <label htmlFor="Password">Password</label>
+              <p className="forgot">Forgot Password?</p>
+            </div>
             <input
+              className="loginInp"
               type="password"
               value={formData.password}
               onChange={(e) =>
                 setFormData({ ...formData, password: e.target.value })
               }
             />
-            <button className="btn">Submit</button>
+            <div className="remember">
+              <input type="checkbox" />
+              <p>Remember Me</p>
+            </div>
+            <button className="loginBtn">Submit</button>
           </form>
+          <p>Or continue with </p>
+          <div className="others">
+            <div className="thirdParty">
+              <FcGoogle className="compIcon" />
+              <p>Google</p>
+            </div>
+            <div className="thirdParty">
+              <FaApple className="compIcon" />
+              <p>Apple</p>
+            </div>
+          </div>
+          <div className="toSignIn">
+            <p>Don't have an account?</p>
+            <p onClick={toSignUp} className="toSignInBtn">
+              Sign Up
+            </p>
+          </div>
         </div>
+        <p className="credentials">© 2023 Stocker Inc. All rights reserved</p>
       </div>
     </div>
   );

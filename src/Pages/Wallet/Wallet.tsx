@@ -1,8 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Portofolio from "../../Services/PortofolioService";
 import "./Wallet.css";
+import type { total } from "../../Services/Interfaces/TotalInterface";
 
 export default function Wallet() {
+  const [stock, setStock] = useState<total>();
   const colors = [
     "#cf39c8",
     "#2196f3",
@@ -18,13 +20,16 @@ export default function Wallet() {
     try {
       const response = await Portofolio.getTotal();
       console.log(response);
+      setStock(response);
     } catch (e) {
       console.log(e);
     }
   };
 
   useEffect(() => {
-    getData();
+    setTimeout(() => {
+      getData();
+    }, 0);
   }, []);
 
   return (
@@ -32,14 +37,25 @@ export default function Wallet() {
       <div className="walletContainer">
         <h1>Stock Chart</h1>
         <div className="chart">
-          <div className="inChart">
-            <label>Name</label>
-            <h2 className="stockName">AAPL</h2>
-            <label>Price</label>
-            <h2 className="Price">33</h2>
-            <label>Shares</label>
-            <h2 className="stockShares">33</h2>
-          </div>
+          {stock?.portfolioChart.map((stock, index) => {
+            const currentColor = colors[index % colors.length];
+            return (
+              <div
+                key={index}
+                className="inChart"
+                style={{ borderLeft: `5px solid ${currentColor}` }}
+              >
+                <label>Name</label>
+                <h2 className="stockName" style={{ color: currentColor }}>
+                  {stock.symbol}
+                </h2>
+                <label>Price</label>
+                <h2 className="Price">{stock.value}</h2>
+                <label>Shares</label>
+                <h2 className="stockShares">{stock.percentage}</h2>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
