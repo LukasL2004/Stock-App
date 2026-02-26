@@ -3,6 +3,7 @@ import {
   type ForgotPassword,
   type Login,
   type resetPassword,
+  type SignUp,
 } from "./Interfaces/UserInterface";
 
 const API_URL = "http://localhost:8080/api/users";
@@ -30,7 +31,7 @@ const authService = {
       throw error;
     }
   },
-  register: async (registerData: Login): Promise<AuthResponse> => {
+  register: async (registerData: SignUp): Promise<AuthResponse> => {
     try {
       const response: Response = await fetch(`${API_URL}/register`, {
         method: "POST",

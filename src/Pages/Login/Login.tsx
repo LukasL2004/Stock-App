@@ -43,46 +43,48 @@ export default function Login() {
           Welcome back. Please login in your portofolio
         </p>
         <div className="loginContainer">
-          <form onSubmit={submitHendler}>
-            {error}
-            <label className="email" htmlFor="Email">
-              Email
-            </label>
-            <input
-              className="loginInp"
-              type="email"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
-            />
-            <div className="loginPass">
-              <label htmlFor="Password">Password</label>
-              <p className="forgot">Forgot Password?</p>
-            </div>
-            <input
-              className="loginInp"
-              type="password"
-              value={formData.password}
-              onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
-              }
-            />
-            <div className="remember">
-              <input type="checkbox" />
-              <p>Remember Me</p>
-            </div>
-            <button className="loginBtn">Submit</button>
-          </form>
-          <p>Or continue with </p>
-          <div className="others">
-            <div className="thirdParty">
-              <FcGoogle className="compIcon" />
-              <p>Google</p>
-            </div>
-            <div className="thirdParty">
-              <FaApple className="compIcon" />
-              <p>Apple</p>
+          <div className="loginHelper">
+            <form onSubmit={submitHendler}>
+              {error}
+              <label className="email" htmlFor="Email">
+                Email
+              </label>
+              <input
+                className="loginInp"
+                type="email"
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
+              />
+              <div className="loginPass">
+                <label htmlFor="Password">Password</label>
+                <p className="forgot">Forgot Password?</p>
+              </div>
+              <input
+                className="loginInp"
+                type="password"
+                value={formData.password}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
+              />
+              <div className="remember">
+                <input type="checkbox" />
+                <p>Remember Me</p>
+              </div>
+              <button className="loginBtn">Submit</button>
+            </form>
+            <p className="separator">Or continue with </p>
+            <div className="others">
+              <div className="thirdParty">
+                <FcGoogle className="compIcon" />
+                <p>Google</p>
+              </div>
+              <div className="thirdParty">
+                <FaApple className="compIcon" />
+                <p>Apple</p>
+              </div>
             </div>
           </div>
           <div className="toSignIn">
