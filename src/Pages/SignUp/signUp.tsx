@@ -45,11 +45,23 @@ export default function SignUp() {
             {error}
             <div className="inputCont">
               <label htmlFor="firstName">First Name</label>
-              <input type="text" className="signUpInp firstName" />
+              <input
+                type="text"
+                className="signUpInp firstName"
+                onChange={(e) => {
+                  setFormData({ ...formData, firstName: e.target.value });
+                }}
+              />
             </div>
             <div className="inputCont">
               <label htmlFor="lastName">Last Name</label>
-              <input type="text" className="signUpInp lastName" />
+              <input
+                onChange={(e) => {
+                  setFormData({ ...formData, lastName: e.target.value });
+                }}
+                type="text"
+                className="signUpInp lastName"
+              />
             </div>
             <div className="inputCont">
               <label htmlFor="Email">Email</label>

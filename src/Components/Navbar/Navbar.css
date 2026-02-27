@@ -2,35 +2,62 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: rgb(64, 182, 93);
+  background-color: #fdfdfe;
   border-bottom: 2px solid black;
   padding: 0 1rem;
-  border: 2px solid black;
+  border-bottom: 2px solid grey;
   width: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.navAppLogo {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+}
+
+.navIcon {
+  background-color: #136dec;
+  padding: 0.7rem;
+  color: #fff;
+  border-radius: 30%;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 5rem;
 }
 
 .links {
   list-style: none;
   display: flex;
-  gap: 4rem;
+  gap: 3rem;
 }
 
 .links li {
   cursor: pointer;
+  font-size: 1.2rem;
+  color: #65758c;
 }
 
 .links li:hover {
-  animation: scale 0.3s ease-in-out both;
-}
-
-@keyframes scale {
-  to {
-    transform: scale(1.2);
-  }
+  /* animation: scale 0.3s ease-in-out both; */
+  border-bottom: 1.6px solid #136dec;
 }
 
 .profileWrapper {
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.bell {
+  font-size: 1.5rem;
+  color: #94a3b8;
+  cursor: pointer;
 }
 
 .profileImg {
@@ -40,19 +67,6 @@
   cursor: pointer;
   margin-right: 2.7rem;
   padding: 0.3rem;
-}
-
-.dropdown {
-  position: absolute;
-  /* top: 60px; */
-  right: 0;
-  background-color: rgb(64, 182, 93);
-  border: 1px solid black;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  min-width: 140px;
-  z-index: 100;
 }
 
 .dropdownLink {

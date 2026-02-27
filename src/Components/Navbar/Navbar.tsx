@@ -1,20 +1,20 @@
 import { useState } from "react";
 import "./Navbar.css";
 import { useNavigate } from "react-router";
+import { MdOutlineTrendingUp } from "react-icons/md";
+import { FaRegBell } from "react-icons/fa";
 
 export default function Navbar() {
-  const [isClicked, setIsClicked] = useState(false);
   const navigate = useNavigate();
+
+  const toHome = () => {
+    navigate("/LandingPage");
+  };
 
   function toProfile() {
     navigate("/Profile");
   }
 
-  function logOut() {
-    navigate("/Login");
-    localStorage.removeItem("token");
-    localStorage.removeItem("email");
-  }
   const toLogOut = () => {
     navigate("/Wallet");
   };
@@ -25,34 +25,27 @@ export default function Navbar() {
 
   return (
     <div className="nav">
-      <div className="name">
-        <p>WealthGrow</p>
+      <div className="left">
+        <div onClick={toHome} className="navAppLogo">
+          <MdOutlineTrendingUp className="navIcon" />
+          <h2 className="appName">WealthGrow</h2>
+        </div>
+        <div className="navLinks">
+          <ul className="links">
+            <li onClick={Home}>Home</li>
+            <li onClick={toLogOut}>Wallet</li>
+            <li>Your chart</li>
+          </ul>
+        </div>
       </div>
-
-      <ul className="links">
-        <li onClick={Home}>Home</li>
-        <li onClick={toLogOut}>Wallet</li>
-        <li>Your chart</li>
-      </ul>
-
       <div className="profileWrapper">
+        <FaRegBell className="bell" />
         <img
-          onClick={() => setIsClicked(!isClicked)}
+          onClick={toProfile}
           className="profileImg"
           src="/poza_cv.jpg"
           alt="profile"
         />
-
-        {isClicked && (
-          <ul className="dropdown">
-            <li onClick={toProfile} className="dropdownLink">
-              Profile
-            </li>
-            <li onClick={logOut} className="dropdownLink">
-              Sign Out
-            </li>
-          </ul>
-        )}
       </div>
     </div>
   );

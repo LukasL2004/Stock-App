@@ -5,6 +5,9 @@ import type {
   ForgotPassword,
   resetPassword,
 } from "../../Services/Interfaces/UserInterface";
+import { IoMdClose } from "react-icons/io";
+import { MdLockReset } from "react-icons/md";
+import { useNavigate } from "react-router";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState<ForgotPassword>({
@@ -17,6 +20,7 @@ export default function ForgotPassword() {
   });
   const [status, setStatus] = useState<string>();
   const [checker, setChecker] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const resetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,6 +30,10 @@ export default function ForgotPassword() {
     } catch (e) {
       console.error(e);
     }
+  };
+
+  const toLogin = () => {
+    navigate("/Login");
   };
 
   const forgotPassword = async (e: React.FormEvent) => {
@@ -41,9 +49,24 @@ export default function ForgotPassword() {
     }
   };
   return (
-    <div>
+    <div className="forget">
       <div className="FRcontainer">
-        <h1>Forgot Password</h1>
+        <div className="FpTop">
+          {/* <div className="rightElems">
+            <MdOutlineTrendingUp className="FpIcon" />
+            <h3>WealthGrow</h3>
+          </div> */}
+          <div className="leftElems">
+            <IoMdClose onClick={toLogin} className="close" />
+          </div>
+        </div>
+        <div>
+          <div className="FpIcon">
+            <MdLockReset className="resetIcon" />
+            <h3>Forgot Password</h3>
+          </div>
+          <p>Please fill the form to reset your password!</p>
+        </div>
         <div className="formContainer">
           <p>{status}</p>
           {checker === false && (
@@ -51,13 +74,16 @@ export default function ForgotPassword() {
               <form onSubmit={forgotPassword}>
                 <label htmlFor="email">Email</label>
                 <input
+                  className="remail"
                   value={email.email}
                   onChange={(e) => {
                     setEmail({ ...email, email: e.target.value });
                   }}
                   type="email"
                 />
-                <button type="submit">Submit</button>
+                <button className="subBtn" type="submit">
+                  Submit
+                </button>
               </form>
             </div>
           )}
@@ -75,6 +101,7 @@ export default function ForgotPassword() {
                 />
                 <label>New Password</label>
                 <input
+                  className="remail"
                   value={reset.password}
                   onChange={(e) =>
                     setReset({ ...reset, password: e.target.value })
@@ -83,11 +110,14 @@ export default function ForgotPassword() {
                 />
                 <label>Code</label>
                 <input
+                  className="remail"
                   value={reset.code}
                   onChange={(e) => setReset({ ...reset, code: e.target.value })}
                   type="password"
                 />
-                <button type="submit">Submit</button>
+                <button className="subBtn" type="submit">
+                  Submit
+                </button>
               </form>
             </div>
           )}

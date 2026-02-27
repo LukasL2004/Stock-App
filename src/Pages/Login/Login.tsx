@@ -19,6 +19,10 @@ export default function Login() {
     navigate("/SignUp");
   }
 
+  const toForgotPassword = () => {
+    navigate("/ForgotPassword");
+  };
+
   const submitHendler = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -59,7 +63,9 @@ export default function Login() {
               />
               <div className="loginPass">
                 <label htmlFor="Password">Password</label>
-                <p className="forgot">Forgot Password?</p>
+                <p onClick={toForgotPassword} className="forgot">
+                  Forgot Password?
+                </p>
               </div>
               <input
                 className="loginInp"
