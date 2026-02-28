@@ -1,22 +1,23 @@
 .wraper {
-  background-color: rgb(4, 18, 31);
-  height: 100vh;
-  width: 100%;
+  background-color: #f6f7f8;
+  width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: Arial, Helvetica, sans-serif;
 }
 .profile {
-  background-color: rgb(64, 182, 93);
+  background-color: #fff;
   width: 30%;
-  height: 60%;
+  height: 65%;
   display: flex;
-  justify-content: start;
+  justify-content: center;
   align-items: center;
   flex-direction: column;
   margin: 0;
   padding: 0;
-  border-radius: 5px;
+  border-radius: 20px;
+  box-shadow: 0 0 5px #d3d1d1;
 }
 
 .profileHeader img {
@@ -24,41 +25,79 @@
   height: 120px;
   border-radius: 100%;
   margin-top: 20px;
+  border: 3px solid #fff;
+  box-shadow: 0 0 15px #999999;
 }
 
-.valueSection {
+.valueBoxes {
   display: flex;
-  justify-content: space-between;
-  align-self: center;
-  gap: 2rem;
+  justify-content: space-evenly;
+  width: 100%;
+  height: 20%;
 }
 
-.statBox {
-  background-color: rgb(18, 94, 28);
-  padding: 3rem;
+.vbox {
+  width: 35%;
+
+  background-color: #065942;
   border-radius: 15px;
-  position: relative;
-  border: 2px solid black;
-  color: #ffff;
+}
+.bal {
+  background-color: #09a473;
 }
 
-.valueTitle {
-  position: absolute;
-  top: 0;
-  font-size: 1.1rem;
-  right: 50%;
-  transform: translate(50%, -50%);
+.vboxTopSide {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: space-between;
+  color: #fff;
 }
 
-.balance {
-  font-size: 1.8rem;
+.vboxHelper {
+  padding: 0rem 1rem 1rem;
 }
 
-.addFounds {
-  position: absolute;
-  top: 0px;
-  right: 5px;
-  cursor: pointer;
+.vboxIcon {
   font-size: 2rem;
-  font-weight: bold;
+  color: #5ce4b9;
+}
+
+.amount {
+  font-size: 1.7rem;
+  color: #fff;
+}
+
+.btnWrapper {
+  width: 65%;
+}
+
+.ProfileBtn {
+  width: 100%;
+  margin: 0.4rem;
+  border: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  padding: 1rem;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 0.3rem;
+}
+
+.add {
+  margin-top: 2rem;
+  background-color: #0f172a;
+}
+
+.sell {
+  border: 2px solid #e2e8f0;
+  background-color: #fff;
+  color: #000;
+}
+
+.audit {
+  color: #94a3b8;
+  background-color: transparent;
 }

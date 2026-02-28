@@ -6,6 +6,11 @@ import WithdrawPopUp from "../../Components/PopUp/FinancePops/WithdrawPopUp";
 import AuditLogPop from "../../Components/PopUp/AuditLogPop/AuditLogPop";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
+import { CiWallet } from "react-icons/ci";
+import { AiOutlineRise } from "react-icons/ai";
+import { MdOutlineAddCard } from "react-icons/md";
+import { HiOutlineCash } from "react-icons/hi";
+import { PiClockCounterClockwise } from "react-icons/pi";
 
 export default function Profile() {
   const [balance, setBalance] = useState<number>(0);
@@ -77,28 +82,50 @@ export default function Profile() {
           </div>
           <h2 className="username">Laza Lukas</h2>
         </div>
-        <div className="valueSection">
-          <div className="statBox">
-            <p className="valueTitle">Balance</p>
-            <div className="addFounds" onClick={() => setAddFoundPop(true)}>
-              +
+        <div className="valueBoxes">
+          <div className="vbox bal">
+            <div className="vboxHelper">
+              <div className="vboxTopSide">
+                <p className="vboxTitle">Balance</p>
+                <CiWallet className="vboxIcon" />
+              </div>
+              <div className="amount">${balance}</div>
             </div>
-            <div className="balance">{balance} $</div>
           </div>
-          <div className="statBox">
-            <p className="valueTitle">Investments</p>
-            <div className="balance">{investment} $</div>
+          <div className="vbox">
+            <div className="vboxHelper">
+              <div className="vboxTopSide">
+                <p className="vboxTitle">Investments</p>
+                <AiOutlineRise className="vboxIcon" />
+              </div>
+              <div className="amount">${investment}</div>
+            </div>
           </div>
         </div>
-        <button className="btn" onClick={() => setAddFoundPop(true)}>
-          Add founds
-        </button>
-        <button className="btn" onClick={() => setwithdrawFoundPop(true)}>
-          Withdraw
-        </button>
-        <button className="btn" onClick={() => setAuditLogPop(true)}>
-          Audit
-        </button>
+        <div className="btnWrapper">
+          <button
+            className="add ProfileBtn"
+            onClick={() => setAddFoundPop(true)}
+          >
+            <MdOutlineAddCard /> Add founds
+          </button>
+        </div>
+        <div className="btnWrapper">
+          <button
+            className="sell ProfileBtn"
+            onClick={() => setwithdrawFoundPop(true)}
+          >
+            <HiOutlineCash /> Withdraw
+          </button>
+        </div>
+        <div className="btnWrapper">
+          <button
+            className="audit ProfileBtn"
+            onClick={() => setAuditLogPop(true)}
+          >
+            <PiClockCounterClockwise /> Audit
+          </button>
+        </div>
       </div>
     </div>
   );

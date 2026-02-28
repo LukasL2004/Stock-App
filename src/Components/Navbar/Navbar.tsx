@@ -1,4 +1,3 @@
-import { useState } from "react";
 import "./Navbar.css";
 import { useNavigate } from "react-router";
 import { MdOutlineTrendingUp } from "react-icons/md";

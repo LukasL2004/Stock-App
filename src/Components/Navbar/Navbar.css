@@ -3,11 +3,11 @@
   justify-content: space-between;
   align-items: center;
   background-color: #fdfdfe;
-  border-bottom: 2px solid black;
   padding: 0 1rem;
-  border-bottom: 2px solid grey;
+  border-bottom: 0.3px solid rgb(226, 226, 226);
   width: 100%;
   font-family: Arial, Helvetica, sans-serif;
+  height: 70px;
 }
 
 .navAppLogo {

@@ -12,13 +12,15 @@ import LandingPage from "./Pages/LandingPage/LandingPage";
 import Navbar from "./Components/Navbar/Navbar";
 import ForgotPassword from "./Pages/ForgotPassword/ForgotPassword";
 import Wallet from "./Pages/Wallet/Wallet";
+import Footer from "./Components/Footer/Footer";
 
 function LayoutWithNavbar() {
   return (
-    <>
+    <div className="main-layout">
       <Navbar />
       <Outlet />
-    </>
+      <Footer />
+    </div>
   );
 }
 
