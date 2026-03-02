@@ -107,7 +107,7 @@ export default function Profile() {
             className="add ProfileBtn"
             onClick={() => setAddFoundPop(true)}
           >
-            <MdOutlineAddCard /> Add founds
+            <MdOutlineAddCard /> Add funds
           </button>
         </div>
         <div className="btnWrapper">

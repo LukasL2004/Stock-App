@@ -100,7 +100,7 @@ export default function Login() {
             </p>
           </div>
         </div>
-        <p className="credentials">© 2023 Stocker Inc. All rights reserved</p>
+        <p className="credentials">© 2026 Stocker Inc. All rights reserved</p>
       </div>
     </div>
   );
