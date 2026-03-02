@@ -11,6 +11,8 @@ import { AiOutlineRise } from "react-icons/ai";
 import { MdOutlineAddCard } from "react-icons/md";
 import { HiOutlineCash } from "react-icons/hi";
 import { PiClockCounterClockwise } from "react-icons/pi";
+import type { User } from "../../Services/Interfaces/UserInterface";
+import authService from "../../Services/UserService";
 
 export default function Profile() {
   const [balance, setBalance] = useState<number>(0);
@@ -19,6 +21,7 @@ export default function Profile() {
   const [addFoundPop, setAddFoundPop] = useState(false);
   const [withdrawFoundPop, setwithdrawFoundPop] = useState(false);
   const [auditLogPop, setAuditLogPop] = useState(false);
+  const [user, SetUser] = useState<User>();
 
   const fetchBalance = useCallback(async () => {
     try {
@@ -27,7 +30,9 @@ export default function Profile() {
       if (!token) {
         throw new Error("You are not logged in");
       }
+      const userResp = await authService.getUser();
       const balanceResponse = await WalletService.Balance(token);
+      SetUser(userResp);
       setInvestment(balanceResponse.investment);
       setBalance(balanceResponse.balance);
     } catch (error) {
@@ -80,7 +85,9 @@ export default function Profile() {
           <div className="profilePic">
             <img src="/poza_cv.jpg" alt="" />
           </div>
-          <h2 className="username">Laza Lukas</h2>
+          <h2 className="username">
+            {user?.firstName} {user?.lastName}
+          </h2>
         </div>
         <div className="valueBoxes">
           <div className="vbox bal">

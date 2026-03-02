@@ -4,9 +4,11 @@ import {
   type Login,
   type resetPassword,
   type SignUp,
+  type User,
 } from "./Interfaces/UserInterface";
 
 const API_URL = "http://localhost:8080/api/users";
+const token = localStorage.getItem("token");
 
 const authService = {
   login: async (loginData: Login): Promise<AuthResponse> => {
@@ -88,6 +90,26 @@ const authService = {
     } catch (e) {
       console.log(e);
       throw e;
+    }
+  },
+  getUser: async (): Promise<User> => {
+    try {
+      const resp: Response = await fetch(`${API_URL}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!resp.ok) {
+        throw new Error("Sorry user not found");
+      }
+
+      const data = await resp.json();
+      return data;
+    } catch {
+      throw new Error("Sorry an error has ocurred");
     }
   },
 };
