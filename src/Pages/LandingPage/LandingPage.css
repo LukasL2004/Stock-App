@@ -1,99 +1,65 @@
-.main {
-  margin: 0;
-  height: 100vh;
-  width: 100%;
-  background-color: rgb(4, 18, 31);
-  position: relative;
-  top: 0;
+.mainLanding {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 2rem;
-}
-
-.title {
-  margin: 0;
-  text-align: center;
-  align-self: center;
-  border-bottom: 1px solid rgb(4, 18, 31);
-}
-
-.stockContainer {
-  background-color: rgb(64, 182, 93);
-  height: 50%;
-  overflow: auto;
-  width: 15%;
-}
-
-.stocks {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-self: center;
-  width: 100%;
-  padding: 0.4rem;
-  border-bottom: 1px solid rgb(4, 18, 31);
-  text-align: center;
-  padding: 1rem 0;
-  cursor: pointer;
-}
-
-.stocks p {
-  margin: 0rem 1rem;
-}
-
-.stockPrice {
-  margin: 0;
-}
-
-.displayContainer {
-  background-color: rgb(64, 182, 93);
-  height: 50%;
-  width: 40%;
-  overflow: auto;
-  overflow: auto;
-}
-
-.stockHeader {
-  display: flex;
-  justify-content: space-between;
-  margin: 1rem;
-}
-
-.displayTitle {
-  font-size: 2rem;
-}
-
-.price {
-  font-size: 1.5rem;
-  display: flex;
-  align-items: center;
-  margin: 0;
-}
-
-.charts {
-  height: 70%;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  align-self: center;
   flex-direction: column;
-  margin-top: 3rem;
+  background-color: #f6f7f8;
+  padding: 1rem;
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-.graph {
-  height: 100%;
-  width: 80%;
-}
-
-.selectPeriod {
+.containers {
+  width: 100%;
+  height: 25%;
+  /* padding: 4rem 0; */
+  /* background-color: aqua; */
   display: flex;
-  gap: 4rem;
-  margin-top: 1rem;
+  justify-content: space-evenly;
 }
 
-.period {
-  cursor: pointer;
+.cont {
+  width: 25%;
+  background-color: #fff;
+  height: 100%;
+  padding: 5px 1rem;
+  border-radius: 10px;
+}
+
+.topCont {
+  display: flex;
+  justify-content: space-between;
+}
+
+.ContIcon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e7f0fd;
+  color: #136dec;
+  border-radius: 10px;
+  font-size: 2rem;
+  padding: 0 0.7rem;
+}
+
+.profitCont {
+  align-items: center;
+  display: flex;
+  padding: 0.2rem 0.3rem;
+  border-radius: 4px;
+  font-weight: 400;
+}
+
+.mainCont {
+  margin: 1rem 0;
+}
+
+.details {
+  margin: 1rem 0;
+  color: #78869a;
+}
+
+.sum {
+  font-size: 2.3rem;
+  margin: 0.1rem;
 }

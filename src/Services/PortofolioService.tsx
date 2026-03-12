@@ -1,4 +1,5 @@
 import type { portofolioData } from "./Interfaces/PortofolioInterface";
+import type { DailyProfit } from "./Interfaces/ProfitInterface";
 import type { total } from "./Interfaces/TotalInterface";
 
 const API_URL = "http://localhost:8080/api/portofolio";
@@ -37,6 +38,23 @@ const Portofolio = {
         throw new Error("Totol not found");
       }
       const data: total = await response.json();
+      return data;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  },
+  getProfit: async (symbol: string): Promise<DailyProfit> => {
+    try {
+      const response: Response = await fetch(`${API_URL}/profit/${symbol}`, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!response.ok) {
+        throw new Error("Sorry something went wrong");
+      }
+      const data: DailyProfit = await response.json();
       return data;
     } catch (e) {
       console.log(e);

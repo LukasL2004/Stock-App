@@ -24,9 +24,10 @@
 
 .navIcon {
   background-color: #136dec;
-  padding: 0.7rem;
+  padding: 0.4rem;
   color: #fff;
   border-radius: 30%;
+  font-size: 1.6rem;
 }
 
 .left {
