@@ -1,0 +1,97 @@
+.growth-history-wrapper {
+  width: 90%;
+  margin: 0 auto;
+  background-color: #ffffff;
+  /* border-radius: 0 0 12px 12px; */
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f0f0f0;
+  padding: 24px;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+  box-sizing: border-box;
+}
+
+.growth-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.growth-history-title-group h2 {
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.growth-history-title-group p {
+  margin: 0;
+  font-size: 14px;
+  color: #8c8c8c;
+}
+
+.growth-history-filters {
+  display: flex;
+  gap: 8px;
+}
+
+.filter-btn {
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #595959;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+  background: #f5f5f5;
+}
+
+.filter-btn.active {
+  background: #1890ff;
+  color: #ffffff;
+}
+
+.chartMain {
+  width: 100%;
+  height: 350px;
+  position: relative;
+}
+
+.custom-tooltip {
+  width: auto;
+  min-width: 100px;
+  height: auto;
+  position: absolute;
+  display: none;
+  padding: 12px;
+  box-sizing: border-box;
+  font-size: 14px;
+  text-align: left;
+  z-index: 1000;
+  top: 12px;
+  left: 12px;
+  pointer-events: none;
+  background-color: #ffffff;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.tooltip-date {
+  font-size: 12px;
+  color: #8c8c8c;
+  margin-bottom: 4px;
+}
+
+.tooltip-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a1a;
+}

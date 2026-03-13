@@ -16,6 +16,10 @@ import { RiWallet3Line } from "react-icons/ri";
 import type { DailyProfit } from "../../Services/Interfaces/ProfitInterface";
 import { MdOutlineTrendingUp } from "react-icons/md";
 import { PiPiggyBank } from "react-icons/pi";
+import { IoIosCheckmarkCircle } from "react-icons/io";
+import { FaArrowTrendDown } from "react-icons/fa6";
+import { FaPlusCircle } from "react-icons/fa";
+import { FaMinusCircle } from "react-icons/fa";
 
 export default function LandingPage() {
   const [stock, setStock] = useState<Stock[]>();
@@ -144,7 +148,10 @@ export default function LandingPage() {
             {(profit?.dailyProfitPercentage ?? 0) > 0 ? (
               <p
                 className="profitCont"
-                style={{ background: "#00ff00", color: "#000000" }}
+                style={{
+                  background: "#00ff00",
+                  color: "#000000",
+                }}
               >
                 &uarr; High
               </p>
@@ -189,40 +196,80 @@ export default function LandingPage() {
           closed={() => setClosedSell(false)}
         ></SellPopUp>
       )}
-      <div className="stockContainer">
-        <h1 className="title">Stocks</h1>
-        {stock?.map((stock) => (
-          <div
-            key={stock.symbol}
-            onClick={() =>
-              getStockInfo(stock.symbol, stock.price, stock.status)
-            }
-            className="stocks"
-          >
-            <p className="title">{stock.symbol}</p>
-            <p className="stockPrice">{stock.price} $</p>
-          </div>
-        ))}
-      </div>
+
       <div className="displayContainer">
-        <div className="stockHeader">
-          <div className="stockStatus">
-            <div className="displayTitle">{name}</div>
-            <div className="status">Status: {status}</div>
-          </div>
-          <div className="price">{price} $</div>
-        </div>
+        <div className="stockHeader"></div>
         <div className="charts">
           <div className="graph">
+            <div className="chartBottom">
+              <div className="stockStatus">
+                <div className="stat">
+                  <h1 className="displayTitle">{name}</h1>
+                  <div className="status">
+                    <IoIosCheckmarkCircle /> {status}
+                  </div>
+                </div>
+                <div className="prices">
+                  <h1 className="price"> ${price?.toFixed(2)}</h1>
+                  {(portofolio?.profit ?? 0) < 0 ? (
+                    <div className="lossSec">
+                      <FaArrowTrendDown />
+                      <p className="profit">${portofolio?.profit.toFixed(2)}</p>
+                    </div>
+                  ) : (
+                    <div className="profitSec">
+                      <MdOutlineTrendingUp />
+                      <p className="profit">
+                        $+{portofolio?.profit.toFixed(2)}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="btnSection">
+                <button
+                  style={{ background: "#136dec" }}
+                  onClick={() => setClosedBuy(true)}
+                  className="bBtn"
+                >
+                  <FaPlusCircle /> buy
+                </button>
+                <button
+                  style={{ background: "#F1F5F9", color: "#000" }}
+                  onClick={() => setClosedSell(true)}
+                  className="bBtn"
+                >
+                  <FaMinusCircle /> Sell
+                </button>
+              </div>
+            </div>
             <Charts name={name}></Charts>
-          </div>
-          <div className="selectPeriod">
-            <button onClick={() => setClosedBuy(true)} className="buyBtn">
-              buy
-            </button>
-            <button onClick={() => setClosedSell(true)} className="buyBtn">
-              Sell
-            </button>
+            <div className="profitContainers">
+              <div className="profContainer">
+                <p className="profContTitle">Shares Owened</p>
+                <h1 className="profContPrice">
+                  {portofolio?.shares.toFixed(2)}
+                </h1>
+              </div>
+              <div className="profContainer">
+                <p className="profContTitle">Average Price</p>
+                <h1 className="profContPrice">
+                  ${portofolio?.averagePrice.toFixed(2)}
+                </h1>
+              </div>
+              <div className="profContainer">
+                <p className="profContTitle">Average Price</p>
+                <h1 className="profContPrice">
+                  ${portofolio?.averagePrice.toFixed(2)}
+                </h1>
+              </div>
+              <div className="profContainer">
+                <p className="profContTitle">Average Price</p>
+                <h1 className="profContPrice">
+                  ${portofolio?.averagePrice.toFixed(2)}
+                </h1>
+              </div>
+            </div>
           </div>
           <div className="stats">
             <div className="avr">Average Price: {portofolio?.averagePrice}</div>
@@ -237,6 +284,21 @@ export default function LandingPage() {
               ))}
             </div>
           </div>
+        </div>
+        <div className="stockContainer">
+          <h1 className="title">Stocks</h1>
+          {stock?.map((stock) => (
+            <div
+              key={stock.symbol}
+              onClick={() =>
+                getStockInfo(stock.symbol, stock.price, stock.status)
+              }
+              className="stocks"
+            >
+              <p className="title">{stock.symbol}</p>
+              <p className="stockPrice">{stock.price} $</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>
