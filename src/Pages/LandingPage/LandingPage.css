@@ -194,3 +194,61 @@
   font-size: 1.2rem;
   color: #6d7c92;
 }
+
+.listTitles {
+  display: flex;
+  justify-content: space-evenly;
+  background-color: transparent;
+  width: 100%;
+}
+
+.listTitles li {
+  list-style: none;
+}
+
+.stocksUl {
+  display: flex;
+  justify-content: space-evenly;
+  background-color: #fff;
+  margin: 0;
+  width: 100%;
+  box-shadow: 0 0 1px black;
+}
+
+.stocksUl li {
+  list-style: none;
+  padding: 1rem 0;
+  cursor: pointer;
+}
+
+.stockContainer {
+  width: 100%;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.topStockContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  background-color: #fff;
+}
+
+.topStockContainer p {
+  color: #136dec;
+  text-decoration: underline;
+  margin-right: 0.8rem;
+}
+
+.stockContainerHelper {
+  width: 80%;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.allocationLi {
+  width: 20%;
+  text-align: center;
+}

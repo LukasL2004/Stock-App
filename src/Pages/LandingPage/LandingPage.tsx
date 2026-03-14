@@ -20,6 +20,7 @@ import { IoIosCheckmarkCircle } from "react-icons/io";
 import { FaArrowTrendDown } from "react-icons/fa6";
 import { FaPlusCircle } from "react-icons/fa";
 import { FaMinusCircle } from "react-icons/fa";
+import AllocationVisualizer from "../../Components/Reuseable/AllocationVisualizer.tsx/AllocationVisualizer";
 
 export default function LandingPage() {
   const [stock, setStock] = useState<Stock[]>();
@@ -271,34 +272,49 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
-          <div className="stats">
-            <div className="avr">Average Price: {portofolio?.averagePrice}</div>
-            <div className="shares">Shares: {portofolio?.shares}</div>
-            <div className="shares">Profit: {portofolio?.profit}</div>
-            <div className="shares">Total: {total?.total}</div>
-            <div className="amountOwend">
-              Amount Owned: {portofolio?.amountOwned}
-              percentage :{" "}
-              {total?.portfolioChart.map((chart) => (
-                <div>{chart.percentage}</div>
-              ))}
-            </div>
-          </div>
         </div>
         <div className="stockContainer">
-          <h1 className="title">Stocks</h1>
-          {stock?.map((stock) => (
-            <div
-              key={stock.symbol}
-              onClick={() =>
-                getStockInfo(stock.symbol, stock.price, stock.status)
-              }
-              className="stocks"
-            >
-              <p className="title">{stock.symbol}</p>
-              <p className="stockPrice">{stock.price} $</p>
+          <div className="stockContainerHelper">
+            <div className="topStockContainer">
+              <h3 className="stockTitle">Top Holders</h3>
+              <p style={{ cursor: "pointer" }} className="seeAll">
+                View All &rarr;
+              </p>
             </div>
-          ))}
+            <ul className="listTitles">
+              <li>ASSET</li>
+              <li>PRICE</li>
+              <li>LOW</li>
+              <li>HIGH</li>
+              <li className="allocationLi">ALLOCATION</li>
+              <li>VALUE</li>
+            </ul>
+            {stock?.map((stock) => {
+              const charPercentage = total?.portfolioChart.find(
+                (chart) => chart.symbol === stock.symbol,
+              );
+              return (
+                <ul
+                  key={stock.symbol}
+                  onClick={() =>
+                    getStockInfo(stock.symbol, stock.price, stock.status)
+                  }
+                  className="stocksUl"
+                >
+                  <li className="stockLi">{stock.symbol}</li>
+                  <li className="stockLi">${stock.price} $</li>
+                  <li className="stockLi">${stock.low} $</li>
+                  <li className="stockLi">${stock.high} $</li>
+                  <li className="allocationLi">
+                    <AllocationVisualizer
+                      percentage={charPercentage?.percentage ?? 0}
+                    ></AllocationVisualizer>
+                  </li>
+                  <li className="stockLi">{portofolio?.amountOwned} $</li>
+                </ul>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
