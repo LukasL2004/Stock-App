@@ -10,8 +10,6 @@ import Portofolio from "../../Services/PortofolioService";
 import type { total } from "../../Services/Interfaces/TotalInterface";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
-// import authService from "../../Services/UserService";
-// import type { User } from "../../Services/Interfaces/UserInterface";
 
 import type { DailyProfit } from "../../Services/Interfaces/ProfitInterface";
 
@@ -26,18 +24,8 @@ export default function LandingPage() {
   const [closedSell, setClosedSell] = useState<boolean>(false);
   const [portofolio, setPortofolio] = useState<portofolioData>();
   const [total, setTotal] = useState<total>();
-  // const [user, setUser] = useState<User>();
-  const [profit, setProfit] = useState<DailyProfit>();
 
-  // const getUser = async () => {
-  //   try {
-  //     const response = await authService.getUser();
-  //     setUser(response);
-  //     console.log(response);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
+  const [profit, setProfit] = useState<DailyProfit>();
 
   const getStockInfo = (symbol: string, price: number) => {
     setName(symbol);
@@ -75,7 +63,6 @@ export default function LandingPage() {
 
   useEffect(() => {
     setTimeout(() => {
-      // getUser();
       fetchData().catch((e) => console.log(e));
     }, 0);
   }, [fetchData]);
