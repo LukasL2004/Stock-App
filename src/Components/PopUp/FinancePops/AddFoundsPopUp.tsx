@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "../../PopUp/PopUp.css";
 import WalletService from "../../../Services/WalletService";
+import { IoMdClose } from "react-icons/io";
+import { FaDollarSign } from "react-icons/fa";
 
 type PopUpProps = {
   onClose: () => void;
@@ -37,24 +39,38 @@ export default function AddFoundsPopUp({ onClose }: PopUpProps) {
           e.stopPropagation();
         }}
       >
-        <h1 className="title">Add founds</h1>
-        <h3 className="description">
-          Make sure you don t invest more then you can afford
-        </h3>
-        <form onSubmit={addFoundsInput}>
-          <label htmlFor="">Please enter the sum you want to invest</label>
-          <input
-            value={amount === undefined ? "" : amount}
-            onChange={(e) => {
-              setAmount(Number(e.target.value));
-            }}
-            className="addFoundsInput"
-            type="number"
-          />
+        <div className="closeBtn">
+          <IoMdClose onClick={onClose} />
+        </div>
+        <div>
+          <h2 className="title">Add founds</h2>
+          <h4 className="description">
+            Enter the amount you would like to deposit into your investment
+            account.
+          </h4>
+        </div>
+        <form className="popUpForm" onSubmit={addFoundsInput}>
+          <div>
+            <div className="inputSection">
+              <FaDollarSign className="dollar" />
+              <input
+                value={amount === undefined ? "" : amount}
+                onChange={(e) => {
+                  setAmount(Number(e.target.value));
+                }}
+                className="addFoundsInput"
+                type="text"
+              />
+            </div>
+          </div>
           <button type="submit" className="btn">
             Add Founds
           </button>
         </form>
+        <p className="advice">
+          Make sure you don't invest more than you can afford. Deposits are
+          typically available within 1-3 business days.
+        </p>
       </div>
     </div>
   );

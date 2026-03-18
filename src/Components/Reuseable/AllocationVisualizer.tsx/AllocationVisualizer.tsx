@@ -11,14 +11,13 @@ export default function AllocationVisualizer({ percentage }: Allocation) {
 
   return (
     <div className="allocationContainer">
-      <span className="allocationText">{`${validPercentage}%`}</span>
-
       <div className="progressBarContainer">
         <div
           className="progressBarFiller"
           style={{ width: `${validPercentage}%` }}
         />
       </div>
+      <span className="allocationText">{`${validPercentage}%`}</span>
     </div>
   );
 }

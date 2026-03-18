@@ -28,8 +28,78 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  background-color: rgb(18, 94, 28);
-  height: 50%;
+  justify-content: space-between;
+  background-color: #fff;
+  height: 40%;
   width: 25%;
   z-index: 1000;
+  padding: 1rem;
+  text-align: center;
+  border-radius: 10px;
+}
+
+.closeBtn {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+  align-items: end;
+  font-weight: 900;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.addFoundsInput {
+  width: 80%;
+  padding: 1rem 0.4rem;
+  border: 1px solid gray;
+  border-radius: 0 10px 10px 0;
+  outline: none;
+  font-size: 1.3rem;
+  border-left: 0;
+}
+
+.addFoundsInput:focus {
+  box-shadow: 0 0 2px #000;
+}
+
+.dollar {
+  border: 1px solid gray;
+  padding: 1rem 0.4rem;
+  font-size: 1.5rem;
+  border-radius: 10px 0 0 10px;
+}
+
+.popUpForm {
+  width: 100%;
+}
+
+.description {
+  color: rgb(143, 142, 142);
+}
+
+.inputSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn {
+  margin-top: 2rem;
+  width: 60%;
+  padding: 1rem 0;
+  border: 0;
+  background-color: #136dec;
+  color: #fff;
+  font-size: 1.3rem;
+  border-radius: 10px;
+}
+
+.title {
+  margin: 0;
+}
+
+.advice {
+  color: rgb(143, 142, 142);
+  font-family: italic;
+  font-size: 0.9rem;
 }

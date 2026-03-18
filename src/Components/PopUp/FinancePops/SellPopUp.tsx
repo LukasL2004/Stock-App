@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import Trading from "../../../Services/StockTradingService";
 import type { sell } from "../../../Services/Interfaces/StockTradingInterface";
+import { IoMdClose } from "react-icons/io";
+import { FaDollarSign } from "react-icons/fa";
+
 interface sellProps {
   symbol: string;
   currentPrice: number;
@@ -32,26 +35,45 @@ export default function SellPopUp(sellProps: sellProps) {
           e.stopPropagation();
         }}
       >
-        <h1 className="title">Sell {sellProps.symbol}</h1>
-        <form onSubmit={handleSell}>
-          <label htmlFor="">Please enter the sum you want to withdraw</label>
-          <input
-            value={Sell.withdrawAmount === undefined ? "" : Sell.withdrawAmount}
-            onChange={(e) => {
-              e.preventDefault();
-              setSell({
-                symbol: sellProps.symbol,
-                currentPrice: sellProps.currentPrice,
-                withdrawAmount: Number(e.target.value),
-              });
-            }}
-            className="addFoundsInput"
-            type="number"
-          />
+        <div className="closeBtn">
+          <IoMdClose onClick={sellProps.closed} />
+        </div>
+        <div>
+          <h2 className="title">Sell {sellProps.symbol}</h2>
+          <h4 className="description">
+            Enter the amount you would like to withdraw from your investment
+            account.
+          </h4>
+        </div>
+        <form className="popUpForm" onSubmit={handleSell}>
+          <div>
+            <div className="inputSection">
+              <FaDollarSign className="dollar" />
+              <input
+                value={
+                  Sell.withdrawAmount === undefined ? "" : Sell.withdrawAmount
+                }
+                onChange={(e) => {
+                  e.preventDefault();
+                  setSell({
+                    symbol: sellProps.symbol,
+                    currentPrice: sellProps.currentPrice,
+                    withdrawAmount: Number(e.target.value),
+                  });
+                }}
+                className="addFoundsInput"
+                type="text"
+              />
+            </div>
+          </div>
           <button type="submit" className="btn">
             Add Founds
           </button>
         </form>
+        <p className="advice">
+          Make sure you don't invest more than you can afford. Deposits are
+          typically available within 1-3 business days.
+        </p>
       </div>
     </div>
   );

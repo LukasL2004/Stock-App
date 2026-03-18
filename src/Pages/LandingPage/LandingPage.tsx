@@ -68,9 +68,14 @@ export default function LandingPage() {
   }, [fetchData]);
 
   useEffect(() => {
+    const email = localStorage.getItem("email");
+    if (!email) return;
+
     const socket = new SockJS("http://localhost:8080/ws");
     const client = Stomp.over(socket);
-    const email = localStorage.getItem("email");
+
+    client.debug = () => {};
+
     client.connect(
       {},
       (frame) => {

@@ -25,7 +25,7 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  background-color: rgb(18, 94, 28);
+  background-color: #fff;
   height: 50%;
   width: 25%;
   z-index: 1000;
