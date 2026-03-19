@@ -46,11 +46,12 @@
   border: 0;
   background-color: #136dec;
   color: #fff;
-  font-size: 1rem;
+  font-size: 0.8rem;
   border-radius: 10px;
   letter-spacing: 1px;
   text-align: center;
   margin-right: 1rem;
+  cursor: pointer;
 }
 .exportBtn {
   padding: 0.6rem 0.8rem;
@@ -58,9 +59,10 @@
   background-color: #fff;
   color: #000;
   border: 1px solid #6b7280;
-  font-size: 1rem;
+  font-size: 0.8rem;
   border-radius: 10px;
   letter-spacing: 1px;
+  cursor: pointer;
 }
 
 .icon {
@@ -194,4 +196,8 @@
 .statusCell.completed {
   color: #059669;
   font-weight: 500;
+}
+
+.pages {
+  cursor: pointer;
 }

@@ -1,8 +1,9 @@
-.bdy {
+.auditMain {
   overflow: auto;
+  width: 100%;
 }
 
-.bdy::-webkit-scrollbar {
+.auditMain::-webkit-scrollbar {
   display: none;
 }
 
@@ -21,14 +22,15 @@
   align-items: center;
 }
 
-.popUp {
+.auditPopUp {
   display: flex;
   align-items: center;
   flex-direction: column;
   background-color: #fff;
-  height: 50%;
-  width: 25%;
+  height: 53%;
+  width: 80%;
   z-index: 1000;
+  border-radius: 10px;
 }
 
 .tableWrapper {
@@ -51,4 +53,24 @@
   width: 100%;
   border-bottom: 1px solid black;
   padding-bottom: 1rem;
+  margin: 0;
+}
+
+.pagination {
+  width: 100%;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.pages {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.pages p {
+  cursor: pointer;
 }

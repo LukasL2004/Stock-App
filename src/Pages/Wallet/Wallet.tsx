@@ -3,17 +3,37 @@ import Portofolio from "../../Services/PortofolioService";
 import "./Wallet.css";
 import type { total } from "../../Services/Interfaces/TotalInterface";
 import type { DailyProfit } from "../../Services/Interfaces/ProfitInterface";
-import { LuDownload } from "react-icons/lu";
+import { FaMinus } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa";
 import InvestmentVisualizer from "../../Components/Reuseable/InvestmentDistribution/InvestmentVisualizer";
 import AllocationVisualizer from "../../Components/Reuseable/AllocationVisualizer.tsx/AllocationVisualizer";
 import AuditLog from "../../Services/AuditLogService";
 import type { AuditLogInterface } from "../../Services/Interfaces/AuditLogInterface";
+import AddFoundsPopUp from "../../Components/PopUp/FinancePops/AddFoundsPopUp";
+import WithdrawPopUp from "../../Components/PopUp/FinancePops/WithdrawPopUp";
 
 export default function Wallet() {
   const [stock, setStock] = useState<total>();
   const [profit, setProfit] = useState<DailyProfit>();
   const [audit, setAudit] = useState<AuditLogInterface[]>();
+  const [n, setN] = useState<number>(0);
+  const [j, setJ] = useState<number>(4);
+  const [addFoundPop, setAddFoundPop] = useState(false);
+  const [withdrawFoundPop, setwithdrawFoundPop] = useState(false);
+
+  const back = () => {
+    if (n > 0) {
+      setN(n - 4);
+    }
+    if (j > 4) {
+      setJ(j - 4);
+    }
+  };
+
+  const forward = () => {
+    setN(n + 4);
+    setJ(j + 4);
+  };
 
   const auditLog = async () => {
     try {
@@ -45,6 +65,15 @@ export default function Wallet() {
 
   return (
     <div className="walletMain">
+      {addFoundPop && <AddFoundsPopUp onClose={() => setAddFoundPop(false)} />}
+      {withdrawFoundPop && (
+        <WithdrawPopUp
+          onClose={() => {
+            setwithdrawFoundPop(false);
+          }}
+        />
+      )}
+
       <div className="topWallet">
         <div className="walletTotal">
           <p className="totalTitle">TOTAL PORTFOLIO VALUE</p>
@@ -62,12 +91,22 @@ export default function Wallet() {
           </div>
         </div>
         <div className="buttonSection">
-          <button className="addBtn">
+          <button
+            onClick={() => {
+              setAddFoundPop(true);
+            }}
+            className="addBtn"
+          >
             {" "}
             <FaPlus className="icon" /> ADD FOUNDS
           </button>
-          <button className="exportBtn">
-            <LuDownload className="icon" /> EXPORT
+          <button
+            onClick={() => {
+              setwithdrawFoundPop(true);
+            }}
+            className="exportBtn"
+          >
+            <FaMinus className="icon" /> WITHDRAW
           </button>
         </div>
       </div>
@@ -120,7 +159,7 @@ export default function Wallet() {
           </div>
 
           <div className="tableBody">
-            {audit?.slice(0, 4).map((item, index) => {
+            {audit?.slice(n, j).map((item, index) => {
               return (
                 <div key={index} className="tableRow">
                   <div className="tdCell">
@@ -140,6 +179,15 @@ export default function Wallet() {
                 </div>
               );
             })}
+            <div className="pagination">
+              <p onClick={back} className="pages">
+                &larr;
+              </p>{" "}
+              <p onClick={forward} className="pages">
+                {" "}
+                &rarr;
+              </p>
+            </div>
           </div>
         </div>
       </div>

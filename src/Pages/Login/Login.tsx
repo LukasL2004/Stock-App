@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./login.css";
 import { FcGoogle } from "react-icons/fc";
 import { MdOutlineTrendingUp } from "react-icons/md";
@@ -22,6 +22,10 @@ export default function Login() {
   const toForgotPassword = () => {
     navigate("/ForgotPassword");
   };
+
+  useEffect(() => {
+    localStorage.removeItem("token");
+  });
 
   const submitHendler = async (e: React.FormEvent) => {
     e.preventDefault();

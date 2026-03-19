@@ -25,6 +25,14 @@ function LayoutWithNavbar() {
 }
 
 function App() {
+  const isAuthenticated = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return redirect("/Login");
+    }
+    return null;
+  };
+
   const router = createBrowserRouter([
     { path: "/", loader: () => redirect("/Login") },
     { path: "Login", element: <Login /> },
@@ -33,7 +41,8 @@ function App() {
 
     {
       path: "/",
-      element: LayoutWithNavbar(),
+      loader: isAuthenticated,
+      element: <LayoutWithNavbar />,
       children: [
         { path: "Profile", element: <Profile /> },
         { path: "LandingPage", element: <LandingPage /> },

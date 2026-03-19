@@ -56,6 +56,7 @@ export default function WithdrawPopUp({ onClose }: PopUpProps) {
                     setAmount(Number(e.target.value));
                   }}
                   type="text"
+                  className="addFoundsInput"
                 />
               </div>
             </div>

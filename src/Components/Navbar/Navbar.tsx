@@ -44,7 +44,6 @@ export default function Navbar() {
             <ul className="links">
               <li onClick={Home}>Home</li>
               <li onClick={toLogOut}>Wallet</li>
-              <li>Your chart</li>
             </ul>
           </div>
           <div className="profileWrapper">
