@@ -13,6 +13,7 @@ import Navbar from "./Components/Navbar/Navbar";
 import ForgotPassword from "./Pages/ForgotPassword/ForgotPassword";
 import Wallet from "./Pages/Wallet/Wallet";
 import Footer from "./Components/Footer/Footer";
+import ChatbaseWidget from "./Components/Reuseable/ChatBot/chatbot";
 
 function LayoutWithNavbar() {
   return (
@@ -20,6 +21,7 @@ function LayoutWithNavbar() {
       <Navbar />
       <Outlet />
       <Footer />
+      <ChatbaseWidget></ChatbaseWidget>
     </div>
   );
 }
