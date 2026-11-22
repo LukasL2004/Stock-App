@@ -1,117 +1,16 @@
-import {
-  type AuthResponse,
-  type ForgotPassword,
-  type Login,
-  type resetPassword,
-  type SignUp,
-  type User,
-} from "./Interfaces/UserInterface";
+import type { AuthResponse, ForgotPassword, Login, resetPassword, SignUp, User } from "./Interfaces/UserInterface";
+import { request } from "../lib/http";
 
-const API_URL = "http://localhost:8080/api/users";
-const token = localStorage.getItem("token");
+const BASE = "/api/users";
 
 const authService = {
-  login: async (loginData: Login): Promise<AuthResponse> => {
-    try {
-      const response: Response = await fetch(`${API_URL}/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loginData),
-      });
-      if (!response.ok) {
-        throw new Error("User not found");
-      }
-      const data: AuthResponse = await response.json();
-
-      localStorage.setItem("token", data.token);
-
-      return data;
-    } catch (error) {
-      console.error("error is: ", error);
-      throw error;
-    }
-  },
-  register: async (registerData: SignUp): Promise<AuthResponse> => {
-    try {
-      const response: Response = await fetch(`${API_URL}/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(registerData),
-      });
-      if (!response.ok) {
-        throw new Error("Incorect credentials");
-      }
-      const data: AuthResponse = await response.json();
-
-      return data;
-
-      return data;
-    } catch (error) {
-      console.error("error is: ", error);
-      throw error;
-    }
-  },
-  ForgotPassword: async (credentials: ForgotPassword): Promise<string> => {
-    try {
-      const response: Response = await fetch(`${API_URL}/forgotPassword`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(credentials),
-      });
-      if (!response.ok) {
-        throw new Error("Sorry the email was not found");
-      }
-
-      const data = await response.text();
-      return data;
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  },
-  ResetPassword: async (reset: resetPassword): Promise<string> => {
-    try {
-      const response: Response = await fetch(`${API_URL}/resetPassword`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(reset),
-      });
-
-      if (!response.ok) {
-        throw new Error("Sorry wrong credentials");
-      }
-
-      const data = await response.text();
-      return data;
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  },
-  getUser: async (): Promise<User> => {
-    try {
-      const resp: Response = await fetch(`${API_URL}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!resp.ok) {
-        throw new Error("Sorry user not found");
-      }
-
-      const data = await resp.json();
-      return data;
-    } catch {
-      throw new Error("Sorry an error has ocurred");
-    }
-  },
+  login: (data: Login) => request<AuthResponse>(`${BASE}/login`, { method: "POST", body: data, auth: false }),
+  register: (data: SignUp) => request<{ message: string }>(`${BASE}/register`, { method: "POST", body: data, auth: false }),
+  ForgotPassword: (data: ForgotPassword) =>
+    request<string>(`${BASE}/forgotPassword`, { method: "POST", body: data, auth: false, parse: "text" }),
+  ResetPassword: (data: resetPassword) =>
+    request<string>(`${BASE}/resetPassword`, { method: "PUT", body: data, auth: false, parse: "text" }),
+  getUser: () => request<User>(BASE),
 };
 
 export default authService;

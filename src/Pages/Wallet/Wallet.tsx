@@ -1,196 +1,143 @@
-import { useEffect, useState } from "react";
-import Portofolio from "../../Services/PortofolioService";
+import { useCallback, useState } from "react";
+import { IoAdd, IoArrowDown } from "react-icons/io5";
 import "./Wallet.css";
+import Portofolio from "../../Services/PortofolioService";
+import WalletService from "../../Services/WalletService";
+import StockData from "../../Services/StockInfoService";
+import AuditLog from "../../Services/AuditLogService";
 import type { total } from "../../Services/Interfaces/TotalInterface";
 import type { DailyProfit } from "../../Services/Interfaces/ProfitInterface";
-import { FaMinus } from "react-icons/fa";
-import { FaPlus } from "react-icons/fa";
-import InvestmentVisualizer from "../../Components/Reuseable/InvestmentDistribution/InvestmentVisualizer";
-import AllocationVisualizer from "../../Components/Reuseable/AllocationVisualizer.tsx/AllocationVisualizer";
-import AuditLog from "../../Services/AuditLogService";
 import type { AuditLogInterface } from "../../Services/Interfaces/AuditLogInterface";
+import type { Stock } from "../../Services/Interfaces/StockInfoInterface";
 import AddFoundsPopUp from "../../Components/PopUp/FinancePops/AddFoundsPopUp";
 import WithdrawPopUp from "../../Components/PopUp/FinancePops/WithdrawPopUp";
+import ActivityList from "../../Components/Transactions/ActivityList";
+import Allocation, { type Holding } from "../../Components/Portfolio/Allocation";
+import Button from "../../Components/UI/Button";
+import Change from "../../Components/UI/Change";
+import Skeleton from "../../Components/UI/Skeleton";
+import { money } from "../../lib/format";
+import { useRealtime } from "../../lib/useRealtime";
+import { useLoad } from "../../lib/useLoad";
+import { useToast } from "../../lib/useToast";
+import { errorMessage } from "../../lib/http";
 
 export default function Wallet() {
-  const [stock, setStock] = useState<total>();
-  const [profit, setProfit] = useState<DailyProfit>();
+  const toast = useToast();
+  const [totals, setTotals] = useState<total>();
+  const [cash, setCash] = useState<number>();
+  const [deposited, setDeposited] = useState<number>();
+  const [daily, setDaily] = useState<DailyProfit>();
+  const [holdings, setHoldings] = useState<Holding[]>();
   const [audit, setAudit] = useState<AuditLogInterface[]>();
-  const [n, setN] = useState<number>(0);
-  const [j, setJ] = useState<number>(4);
-  const [addFoundPop, setAddFoundPop] = useState(false);
-  const [withdrawFoundPop, setwithdrawFoundPop] = useState(false);
+  const [modal, setModal] = useState<"deposit" | "withdraw" | null>(null);
 
-  const back = () => {
-    if (n > 0) {
-      setN(n - 4);
+  const load = useCallback(async () => {
+    const [t, w, s, a] = await Promise.allSettled([Portofolio.getTotal(), WalletService.Balance(), StockData.stocks(), AuditLog.GetAudit()]);
+    if (t.status === "rejected") toast.error("Could not load your portfolio", errorMessage(t.reason));
+    if (w.status === "fulfilled") {
+      setCash(w.value.balance);
+      setDeposited(w.value.investment);
     }
-    if (j > 4) {
-      setJ(j - 4);
+    if (a.status === "fulfilled") setAudit(a.value);
+    if (t.status === "fulfilled") {
+      setTotals(t.value);
+      const prices: Record<string, Stock> = {};
+      if (s.status === "fulfilled") for (const st of s.value) prices[st.symbol] = st;
+      const rows = t.value.portfolioChart.filter((p) => p.value > 0);
+      const list: Holding[] = await Promise.all(
+        rows.map(async (p) => {
+          try {
+            const pos = await Portofolio.getData(p.symbol);
+            const px = prices[p.symbol]?.price;
+            const mv = p.marketValue ?? (px ? pos.shares * px : p.value);
+            return { symbol: p.symbol, shares: pos.shares, invested: p.value, marketValue: mv, profit: p.profit ?? mv - p.value };
+          } catch {
+            const mv = p.marketValue ?? p.value;
+            return { symbol: p.symbol, invested: p.value, marketValue: mv, profit: p.profit ?? mv - p.value };
+          }
+        }),
+      );
+      list.sort((x, y) => y.marketValue - x.marketValue);
+      setHoldings(list);
+      if (list[0]) Portofolio.getProfit(list[0].symbol).then(setDaily).catch(() => setDaily(undefined));
     }
-  };
+  }, [toast]);
+  useLoad(load);
+  useRealtime(load);
 
-  const forward = () => {
-    setN(n + 4);
-    setJ(j + 4);
-  };
-
-  const auditLog = async () => {
-    try {
-      const response = await AuditLog.GetAudit();
-      setAudit(response);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const getData = async () => {
-    try {
-      const response = await Portofolio.getTotal();
-      const profitResponse = await Portofolio.getProfit("AAPL");
-      console.log(response);
-      setProfit(profitResponse);
-      setStock(response);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  useEffect(() => {
-    setTimeout(() => {
-      getData();
-      auditLog();
-    }, 0);
-  }, []);
+  const ready = totals !== undefined && cash !== undefined && holdings !== undefined;
+  const holdingsValue = holdings?.reduce((a, h) => a + h.marketValue, 0) ?? 0;
+  const invested = totals?.investedValue ?? totals?.total ?? 0;
+  const totalReturn = holdings?.reduce((a, h) => a + h.profit, 0) ?? 0;
+  const totalReturnPct = invested > 0 ? (totalReturn / invested) * 100 : 0;
+  const accountValue = holdingsValue + (cash ?? 0);
 
   return (
-    <div className="walletMain">
-      {addFoundPop && <AddFoundsPopUp onClose={() => setAddFoundPop(false)} />}
-      {withdrawFoundPop && (
-        <WithdrawPopUp
-          onClose={() => {
-            setwithdrawFoundPop(false);
-          }}
-        />
-      )}
+    <div className="page wallet">
+      {modal === "deposit" && <AddFoundsPopUp balance={cash} onClose={() => setModal(null)} onDone={load} />}
+      {modal === "withdraw" && <WithdrawPopUp balance={cash} onClose={() => setModal(null)} onDone={load} />}
 
-      <div className="topWallet">
-        <div className="walletTotal">
-          <p className="totalTitle">TOTAL PORTFOLIO VALUE</p>
-          <div className="totalSum">
-            <h3>{stock?.total}$</h3>
-            {(profit?.totalPortfolioProfitDailyPercentage ?? 0) > 0 ? (
-              <p style={{ color: "#059669" }}>
-                &uarr; {profit?.totalPortfolioProfitDailyPercentage.toFixed(2)}%
-              </p>
-            ) : (
-              <p style={{ color: "red", backgroundColor: "#FFE4E6" }}>
-                &darr; {profit?.totalPortfolioProfitDailyPercentage.toFixed(2)}%
-              </p>
-            )}
+      <header className="wallet-hero">
+        <div>
+          <p className="muted">Portfolio</p>
+          {ready ? <div className="wallet-value display num">{money(accountValue)}</div> : <Skeleton w={260} h={52} style={{ marginTop: 6 }} />}
+          <div className="wallet-changes">
+            {ready && <Change kind="both" value={totalReturn} pctValue={totalReturnPct} label="All time" />}
+            {daily && <Change kind="both" value={daily.totalPortfolioProfitDaily} pctValue={daily.totalPortfolioProfitDailyPercentage} label="Today" />}
           </div>
         </div>
-        <div className="buttonSection">
-          <button
-            onClick={() => {
-              setAddFoundPop(true);
-            }}
-            className="addBtn"
-          >
-            {" "}
-            <FaPlus className="icon" /> ADD FOUNDS
-          </button>
-          <button
-            onClick={() => {
-              setwithdrawFoundPop(true);
-            }}
-            className="exportBtn"
-          >
-            <FaMinus className="icon" /> WITHDRAW
-          </button>
+        <div className="wallet-actions">
+          <Button variant="primary" icon={<IoAdd />} onClick={() => setModal("deposit")}>
+            Add funds
+          </Button>
+          <Button variant="secondary" icon={<IoArrowDown />} onClick={() => setModal("withdraw")} disabled={!cash}>
+            Withdraw
+          </Button>
         </div>
-      </div>
-      <div className="walletMainComp">
-        <div className="statistics">
-          <InvestmentVisualizer></InvestmentVisualizer>
-          <div className="assets">
-            <h3>Asset Allocation</h3>
-            <div className="barChart">
-              <div className="asset">
-                <p>Equity</p>
-              </div>
-              <AllocationVisualizer percentage={70}></AllocationVisualizer>
-            </div>
-            <div className="barChart">
-              <div className="asset">
-                <p>Fixed Income</p>
-              </div>
-              <AllocationVisualizer percentage={15}></AllocationVisualizer>
-            </div>
-            <div className="barChart">
-              <div className="asset">
-                <p>Crypto</p>
-              </div>
-              <AllocationVisualizer percentage={0}></AllocationVisualizer>
-            </div>
-            <div className="barChart">
-              <div className="asset">
-                <p>Cash</p>
-              </div>
-              <AllocationVisualizer percentage={15}></AllocationVisualizer>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="walletBottom">
-        <div className="historyTop">
-          <h3>Recent Transactions</h3>
-          <p className="viewAllBtn">View All</p>
-        </div>
+      </header>
 
-        <div className="transactionsTable">
-          <div className="tableHeader">
-            <p>ACTION</p>
-            <p>ASSET</p>
-            <p>AMOUNT</p>
-            <p>PRICE</p>
-            <p>DATE</p>
-            <p>STATUS</p>
-          </div>
-
-          <div className="tableBody">
-            {audit?.slice(n, j).map((item, index) => {
-              return (
-                <div key={index} className="tableRow">
-                  <div className="tdCell">
-                    <span className="actionBadge buy">BUY</span>
-                  </div>
-                  <div className="tdCell assetCell">
-                    <span className="assetSymbol">{item.symbol}</span>
-                  </div>
-                  <div className="tdCell">
-                    {Number(item.shares).toFixed(2)} Shares
-                  </div>
-                  <div className="tdCell boldPrice">
-                    ${Number(item.price).toFixed(2)}
-                  </div>
-                  <div className="tdCell dateCell">{item.date}</div>
-                  <div className="tdCell statusCell completed">Completed</div>
-                </div>
-              );
-            })}
-            <div className="pagination">
-              <p onClick={back} className="pages">
-                &larr;
-              </p>{" "}
-              <p onClick={forward} className="pages">
-                {" "}
-                &rarr;
-              </p>
-            </div>
-          </div>
+      <dl className="kv kv-4 wallet-kv">
+        <div>
+          <dt>Holdings</dt>
+          <dd className="num">{ready ? money(holdingsValue) : <Skeleton w={90} h={16} />}</dd>
         </div>
-      </div>
+        <div>
+          <dt>Cash</dt>
+          <dd className="num">{ready ? money(cash) : <Skeleton w={90} h={16} />}</dd>
+        </div>
+        <div>
+          <dt>Invested</dt>
+          <dd className="num">{ready ? money(invested) : <Skeleton w={90} h={16} />}</dd>
+        </div>
+        <div>
+          <dt>Deposited to date</dt>
+          <dd className="num">{deposited === undefined ? <Skeleton w={90} h={16} /> : money(deposited)}</dd>
+        </div>
+      </dl>
+
+      <section className="section">
+        <div className="section-title">
+          <h2>Holdings</h2>
+        </div>
+        {!ready ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            <Skeleton h={10} r={6} />
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} h={48} />
+            ))}
+          </div>
+        ) : (
+          <Allocation holdings={holdings} cash={cash} />
+        )}
+      </section>
+
+      <section className="section">
+        <div className="section-title">
+          <h2>Activity</h2>
+        </div>
+        <ActivityList items={audit} loading={!audit} pageSize={10} />
+      </section>
     </div>
   );
 }

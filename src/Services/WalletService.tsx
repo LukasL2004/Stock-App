@@ -1,73 +1,12 @@
-import type {
-  ChangeAmount,
-  walletResponse,
-} from "./Interfaces/WalletInterface";
+import type { ChangeAmount, walletResponse } from "./Interfaces/WalletInterface";
+import { request } from "../lib/http";
 
-const Api_URL = "http://localhost:8080/api/wallet";
+const BASE = "/api/wallet";
 
 const WalletService = {
-  Balance: async (token: string): Promise<walletResponse> => {
-    try {
-      const response: Response = await fetch(`${Api_URL}/balance`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Wallet-ul nu a fost gasit");
-      }
-      const data: walletResponse = await response.json();
-
-      return data;
-    } catch (error) {
-      console.error("Error is ", error);
-      throw error;
-    }
-  },
-
-  AddFounds: async (token: string, amount: number): Promise<ChangeAmount> => {
-    try {
-      const response: Response = await fetch(`${Api_URL}/AddFounds`, {
-        method: "POST",
-        headers: {
-          "content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ amount: amount }),
-      });
-      if (!response.ok) {
-        throw new Error("Wallet-ul nu a fost gasit");
-      }
-      const data: ChangeAmount = await response.json();
-      return data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  },
-
-  Withdraw: async (token: string, amount: number): Promise<ChangeAmount> => {
-    try {
-      const response: Response = await fetch(`${Api_URL}/Withdraw`, {
-        method: "Post",
-        headers: {
-          "content-type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ amount: amount }),
-      });
-      if (!response.ok) {
-        throw new Error("Something went wrong");
-      }
-      const data: ChangeAmount = await response.json();
-      return data;
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  },
+  Balance: () => request<walletResponse>(`${BASE}/balance`),
+  AddFounds: (amount: number) => request<ChangeAmount>(`${BASE}/AddFounds`, { method: "POST", body: { amount } }),
+  Withdraw: (amount: number) => request<ChangeAmount>(`${BASE}/Withdraw`, { method: "POST", body: { amount } }),
 };
 
 export default WalletService;

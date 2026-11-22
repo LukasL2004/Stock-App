@@ -1,0 +1,38 @@
+.ticket { overflow: hidden; }
+.ticket-tabs { display: flex; border-bottom: 1px solid var(--border); }
+.ticket-tabs button {
+  flex: 1; height: 50px; font-weight: 600; font-size: 0.9375rem; color: var(--text-2);
+  border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color var(--dur-fast);
+}
+.ticket-tabs button:hover:not(:disabled) { color: var(--text); }
+.ticket-tabs button:disabled { opacity: 0.4; }
+.ticket-tabs button.is-on { color: var(--text); border-bottom-color: currentColor; }
+.ticket-tabs button.is-on.up { color: var(--up); }
+.ticket-tabs button.is-on.down { color: var(--down); }
+.ticket-body { display: flex; flex-direction: column; gap: 12px; padding: 16px 18px 18px; }
+.ticket-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 0.9rem; }
+.ticket-row > span:first-child { color: var(--text-2); }
+.ticket-row strong { font-weight: 500; }
+.ticket-amount { cursor: text; }
+.ticket-input {
+  display: inline-flex; align-items: center; gap: 2px; height: 40px; padding: 0 12px; min-width: 150px;
+  border: 1px solid var(--border-strong); border-radius: var(--r-md); font-weight: 600; font-size: 1rem;
+  transition: box-shadow var(--dur-fast), border-color var(--dur-fast);
+}
+.ticket-input:focus-within { border-color: var(--text); box-shadow: 0 0 0 1px var(--text); }
+.ticket-input.is-invalid { border-color: var(--down); }
+.ticket-input input {
+  width: 100%; border: 0; background: transparent; outline: none; text-align: right; font-weight: 600; font-size: 1rem; padding: 0;
+  font-variant-numeric: tabular-nums;
+}
+.ticket-input input::-webkit-outer-spin-button, .ticket-input input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.ticket-input input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+.ticket-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.ticket-review { display: flex; flex-direction: column; gap: 10px; padding: 12px 0 2px; border-top: 1px solid var(--border); }
+.ticket-edit { align-self: center; font-size: 0.875rem; }
+.ticket-foot { padding: 12px 18px; border-top: 1px solid var(--border); font-size: 0.8125rem; color: var(--text-2); text-align: center; }
+
+.row-end-h { flex-direction: row; align-items: center; gap: 14px; }
+.row-price { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+.row-price strong { font-size: 0.9375rem; }
+@media (max-width: 420px) { .row-end-h .sparkline { display: none; } }

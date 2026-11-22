@@ -1,55 +1,11 @@
-import type { buy, portofolio, sell } from "./Interfaces/StockTradingInterface";
+import type { buy, sell } from "./Interfaces/StockTradingInterface";
+import { request } from "../lib/http";
 
-const API_URL = "http://localhost:8080/api/portofolio";
+const BASE = "/api/portofolio";
 
 const Trading = {
-  buy: async (buyData: buy): Promise<portofolio> => {
-    const token = localStorage.getItem("token");
-    try {
-      const response: Response = await fetch(`${API_URL}/buy`, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(buyData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Sorry you are unable to buy");
-      }
-
-      const data: portofolio = await response.json();
-      return data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  },
-  sell: async (sellData: sell): Promise<portofolio> => {
-    try {
-      const token = localStorage.getItem("token");
-      const response: Response = await fetch(`${API_URL}/sell`, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(sellData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Unable to sell sorry");
-      }
-
-      const data: portofolio = await response.json();
-
-      return data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  },
+  buy: (data: buy) => request<{ message: string }>(`${BASE}/buy`, { method: "POST", body: data }),
+  sell: (data: sell) => request<{ message: string }>(`${BASE}/sell`, { method: "POST", body: data }),
 };
 
 export default Trading;

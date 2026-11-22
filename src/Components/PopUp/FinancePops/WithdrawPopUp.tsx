@@ -1,75 +1,75 @@
-import { useState } from "react";
-import "../../PopUp/PopUp.css";
+import { useState, type FormEvent } from "react";
 import WalletService from "../../../Services/WalletService";
-import { IoMdClose } from "react-icons/io";
-import { FaDollarSign } from "react-icons/fa";
+import Modal from "../../UI/Modal";
+import AmountInput from "../../UI/AmountInput";
+import Button from "../../UI/Button";
+import FormError from "../../UI/FormError";
+import { money, parseAmount } from "../../../lib/format";
+import { errorMessage } from "../../../lib/http";
+import { useToast } from "../../../lib/useToast";
 
-type PopUpProps = {
+interface Props {
   onClose: () => void;
-};
+  onDone?: () => void;
+  balance?: number;
+}
 
-export default function WithdrawPopUp({ onClose }: PopUpProps) {
-  const [amount, setAmount] = useState(0);
-  const token = localStorage.getItem("token");
+export default function WithdrawPopUp({ onClose, onDone, balance }: Props) {
+  const toast = useToast();
+  const [raw, setRaw] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const amount = parseAmount(raw);
+  const tooMuch = balance !== undefined && amount > balance + 1e-9;
 
-  const withdraw = async () => {
+  const chips =
+    balance && balance > 0
+      ? [
+          { label: "25%", value: Math.floor(balance * 25) / 100 },
+          { label: "50%", value: Math.floor(balance * 50) / 100 },
+          { label: "All", value: Math.floor(balance * 100) / 100 },
+        ]
+      : undefined;
+
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    if (!(amount > 0)) return setError("Enter an amount to withdraw.");
+    if (tooMuch) return setError(`You can withdraw at most ${money(balance)}.`);
+    setLoading(true);
     try {
-      if (!token) {
-        throw new Error("An error occured please relog and try again");
-      }
-      const response = await WalletService.Withdraw(token, amount);
-      if (!response) {
-        throw new Error("An error occured and try again");
-      }
-    } catch (error) {
-      console.log(error);
+      await WalletService.Withdraw(amount);
+      toast.success(`${money(amount)} withdrawn`);
+      onDone?.();
+      onClose();
+    } catch (err) {
+      setError(errorMessage(err));
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div>
-      <div className="popUpWraper" onClick={onClose}>
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-          className="popUp"
-        >
-          <div className="closeBtn">
-            <IoMdClose onClick={onClose} />
-          </div>
-          <div>
-            <h2>Withdraw</h2>
-            <h4 className="description">
-              {" "}
-              Enter the amount you would like to withdraw from your investment
-              account.
-            </h4>
-          </div>
-          <form className="popUpForm" onSubmit={withdraw}>
-            <div>
-              <div className="inputSection">
-                <FaDollarSign className="dollar" />
-                <input
-                  value={amount === undefined ? "" : amount}
-                  onChange={(e) => {
-                    setAmount(Number(e.target.value));
-                  }}
-                  type="text"
-                  className="addFoundsInput"
-                />
-              </div>
+    <Modal title="Withdraw" description="Move virtual cash out of your account." onClose={onClose}>
+      <form onSubmit={submit} className="modal-foot" noValidate>
+        <AmountInput label="Amount to withdraw in dollars" value={raw} onChange={(v) => { setRaw(v); setError(null); }} chips={chips} autoFocus />
+        {balance !== undefined && (
+          <div className="summary">
+            <div className="summary-row">
+              <span>Available cash</span>
+              <strong className="num">{money(balance)}</strong>
             </div>
-            <button type="submit" className="btn">
-              Submit
-            </button>
-          </form>
-          <p className="advice">
-            Make sure you don't invest more than you can afford. Deposits are
-            typically available within 1-3 business days.
-          </p>
-        </div>
-      </div>
-    </div>
+            <div className="summary-row">
+              <span>Cash after withdrawal</span>
+              <strong className={`num ${tooMuch ? "down" : ""}`}>{money(balance - amount)}</strong>
+            </div>
+          </div>
+        )}
+        <FormError message={error} />
+        <Button type="submit" variant="primary" size="lg" block loading={loading} disabled={!(amount > 0) || tooMuch}>
+          {amount > 0 ? `Withdraw ${money(amount)}` : "Withdraw"}
+        </Button>
+      </form>
+    </Modal>
   );
 }

@@ -1,0 +1,80 @@
+/* WealthGrow design tokens. Flat, high-contrast, one accent. */
+:root {
+  color-scheme: light;
+
+  --font-sans: "Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f5f5f6;
+  --surface-3: #ebebee;
+  --border: #e7e7ea;
+  --border-strong: #cfcfd4;
+  --text: #121212;
+  --text-2: #5d5d63;
+  --text-3: #8b8b92;
+  --overlay: rgba(0, 0, 0, 0.5);
+
+  /* Call to action: black on light, white on dark */
+  --cta: #121212;
+  --cta-ink: #ffffff;
+
+  /* Market colours: text-safe and vivid (lines, fills, pills) */
+  --up: #0a8f46;
+  --up-vivid: #00c805;
+  --up-soft: #e6f7ea;
+  --down: #d9431b;
+  --down-vivid: #ff5000;
+  --down-soft: #fdebe4;
+  --warn: #b26a00;
+  --warn-soft: #fff3df;
+
+  --link: #0a8f46;
+  --focus: #121212;
+
+  --shadow-pop: 0 12px 40px -12px rgba(0, 0, 0, 0.25);
+
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-pill: 999px;
+
+  --nav-h: 60px;
+  --content-max: 1120px;
+  --gutter: clamp(16px, 4vw, 40px);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 120ms;
+  --dur-med: 220ms;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #000000;
+  --surface: #000000;
+  --surface-2: #141414;
+  --surface-3: #1f1f1f;
+  --border: #262626;
+  --border-strong: #3a3a3a;
+  --text: #ffffff;
+  --text-2: #a1a1a6;
+  --text-3: #6e6e73;
+  --overlay: rgba(0, 0, 0, 0.7);
+
+  --cta: #ffffff;
+  --cta-ink: #000000;
+
+  --up: #2fd672;
+  --up-vivid: #00c805;
+  --up-soft: #0c2a18;
+  --down: #ff7a4d;
+  --down-vivid: #ff5000;
+  --down-soft: #331510;
+  --warn: #f4b54a;
+  --warn-soft: #302208;
+
+  --link: #2fd672;
+  --focus: #ffffff;
+
+  --shadow-pop: 0 12px 40px -12px rgba(0, 0, 0, 0.8);
+}

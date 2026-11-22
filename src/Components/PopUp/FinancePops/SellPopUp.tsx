@@ -1,80 +1,96 @@
-import React, { useState } from "react";
+import { useState, type FormEvent } from "react";
 import Trading from "../../../Services/StockTradingService";
-import type { sell } from "../../../Services/Interfaces/StockTradingInterface";
-import { IoMdClose } from "react-icons/io";
-import { FaDollarSign } from "react-icons/fa";
+import Modal from "../../UI/Modal";
+import AmountInput from "../../UI/AmountInput";
+import Button from "../../UI/Button";
+import FormError from "../../UI/FormError";
+import { companyName, money, shares as fmtShares, parseAmount } from "../../../lib/format";
+import { errorMessage } from "../../../lib/http";
+import { useToast } from "../../../lib/useToast";
 
-interface sellProps {
+interface Props {
   symbol: string;
   currentPrice: number;
+  sharesOwned?: number;
   closed: () => void;
+  onDone?: () => void;
 }
 
-export default function SellPopUp(sellProps: sellProps) {
-  const [Sell, setSell] = useState<sell>({
-    symbol: sellProps.symbol,
-    currentPrice: sellProps.currentPrice,
-    withdrawAmount: 0,
-  });
+export default function SellPopUp({ symbol, currentPrice, sharesOwned = 0, closed, onDone }: Props) {
+  const toast = useToast();
+  const [raw, setRaw] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleSell = async (e: React.FormEvent) => {
+  const marketValue = sharesOwned * currentPrice;
+  const amount = parseAmount(raw);
+  const sellShares = currentPrice > 0 ? amount / currentPrice : 0;
+  const tooMuch = sellShares > sharesOwned + 1e-9;
+
+  const chips =
+    marketValue > 0
+      ? [
+          { label: "25%", value: Math.floor(marketValue * 25) / 100 },
+          { label: "50%", value: Math.floor(marketValue * 50) / 100 },
+          { label: "All", value: Math.floor(marketValue * 100) / 100 },
+        ]
+      : undefined;
+
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
+    setError(null);
+    if (!(amount > 0)) return setError("Enter an amount to sell.");
+    if (tooMuch) return setError(`You own ${fmtShares(sharesOwned)} shares, worth ${money(marketValue)}.`);
+    setLoading(true);
     try {
-      const response = await Trading.sell(Sell);
-      console.log("Success:", response);
-    } catch (error) {
-      console.error(error);
+      await Trading.sell({ symbol, currentPrice, withdrawAmount: amount });
+      toast.success(`Sold ${fmtShares(sellShares)} shares of ${symbol}`, `${money(amount)} added to your cash balance`);
+      onDone?.();
+      closed();
+    } catch (err) {
+      setError(errorMessage(err));
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="popUpWraper" onClick={sellProps.closed}>
-      <div
-        className="popUp"
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-      >
-        <div className="closeBtn">
-          <IoMdClose onClick={sellProps.closed} />
-        </div>
-        <div>
-          <h2 className="title">Sell {sellProps.symbol}</h2>
-          <h4 className="description">
-            Enter the amount you would like to withdraw from your investment
-            account.
-          </h4>
-        </div>
-        <form className="popUpForm" onSubmit={handleSell}>
-          <div>
-            <div className="inputSection">
-              <FaDollarSign className="dollar" />
-              <input
-                value={
-                  Sell.withdrawAmount === undefined ? "" : Sell.withdrawAmount
-                }
-                onChange={(e) => {
-                  e.preventDefault();
-                  setSell({
-                    symbol: sellProps.symbol,
-                    currentPrice: sellProps.currentPrice,
-                    withdrawAmount: Number(e.target.value),
-                  });
-                }}
-                className="addFoundsInput"
-                type="text"
-              />
+    <Modal title={`Sell ${symbol}`} description={`${companyName(symbol)} at ${money(currentPrice)} per share`} onClose={closed}>
+      {sharesOwned <= 0 ? (
+        <>
+          <FormError message={`You do not own any ${symbol} shares yet.`} />
+          <Button variant="secondary" block onClick={closed}>
+            Close
+          </Button>
+        </>
+      ) : (
+        <form onSubmit={submit} className="modal-foot" noValidate>
+          <AmountInput label="Amount to sell in dollars" value={raw} onChange={(v) => { setRaw(v); setError(null); }} chips={chips} autoFocus />
+          <div className="summary">
+            <div className="summary-row">
+              <span>Shares to sell</span>
+              <strong className="num">{amount > 0 ? fmtShares(sellShares) : "–"}</strong>
+            </div>
+            <div className="summary-row">
+              <span>You own</span>
+              <strong className="num">
+                {fmtShares(sharesOwned)} shares ({money(marketValue)})
+              </strong>
+            </div>
+            <div className="summary-row">
+              <span>Shares after sale</span>
+              <strong className={`num ${tooMuch ? "down" : ""}`}>{amount > 0 ? fmtShares(Math.max(0, sharesOwned - sellShares)) : "–"}</strong>
             </div>
           </div>
-          <button type="submit" className="btn">
-            Add Founds
-          </button>
+          <FormError message={error} />
+          <Button type="submit" variant="down" size="lg" block loading={loading} disabled={!(amount > 0) || tooMuch}>
+            {amount > 0 ? `Sell ${money(amount)} of ${symbol}` : `Sell ${symbol}`}
+          </Button>
+          <p className="field-hint">
+            Proceeds go straight to your cash balance.
+          </p>
         </form>
-        <p className="advice">
-          Make sure you don't invest more than you can afford. Deposits are
-          typically available within 1-3 business days.
-        </p>
-      </div>
-    </div>
+      )}
+    </Modal>
   );
 }

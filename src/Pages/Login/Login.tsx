@@ -1,111 +1,79 @@
-import React, { useEffect, useState } from "react";
-import "./login.css";
-import { FcGoogle } from "react-icons/fc";
-import { MdOutlineTrendingUp } from "react-icons/md";
-import { FaApple } from "react-icons/fa";
-import authSercice from "../../Services/UserService";
-import type { Login } from "../../Services/Interfaces/UserInterface";
-import { useNavigate } from "react-router";
+import { useState, type FormEvent } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router";
+import authService from "../../Services/UserService";
+import AuthLayout from "../Auth/AuthLayout";
+import Field from "../../Components/UI/Field";
+import Button from "../../Components/UI/Button";
+import FormError from "../../Components/UI/FormError";
+import { setSession } from "../../lib/auth";
+import { errorMessage, MOCK_MODE } from "../../lib/http";
 
 export default function Login() {
-  const [formData, setFormData] = useState<Login>({
-    email: "",
-    password: "",
-  });
-  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const [email, setEmail] = useState(MOCK_MODE ? "demo@wealthgrow.app" : "");
+  const [password, setPassword] = useState(MOCK_MODE ? "demo1234" : "");
+  const [remember, setRemember] = useState(true);
+  const [error, setError] = useState<string | null>(params.get("expired") ? "Your session expired. Please log in again." : null);
+  const [loading, setLoading] = useState(false);
 
-  function toSignUp() {
-    navigate("/SignUp");
-  }
-
-  const toForgotPassword = () => {
-    navigate("/ForgotPassword");
-  };
-
-  useEffect(() => {
-    localStorage.removeItem("token");
-  });
-
-  const submitHendler = async (e: React.FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
-    setError("");
-    console.log(formData);
-
+    setError(null);
+    if (!email.trim() || !password) {
+      setError("Enter your email and password.");
+      return;
+    }
+    setLoading(true);
     try {
-      const response = await authSercice.login(formData);
-      navigate("/Profile");
-      console.log(response);
-      localStorage.setItem("email", formData.email);
-    } catch (error) {
-      console.log(error);
+      const res = await authService.login({ email: email.trim(), password });
+      setSession(res.token, email, remember);
+      navigate("/dashboard", { replace: true });
+    } catch (err) {
+      setError(errorMessage(err) === "User not found" ? "No account matches that email." : errorMessage(err));
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="login">
-      <div className="loginPage">
-        <MdOutlineTrendingUp className="loginIcon" />
-        <h1 className="LoginTitle">WealthGrow</h1>
-        <p className="welocomeMsg">
-          Welcome back. Please login in your portofolio
+    <AuthLayout
+      title="Log in"
+      subtitle="Welcome back. Your portfolio is waiting."
+      footer={
+        <>
+          New to WealthGrow? <Link to="/SignUp">Create an account</Link>
+        </>
+      }
+    >
+      <form className="auth-form" onSubmit={submit} noValidate>
+        <FormError message={error} />
+        <Field label="Email" type="email" name="email" autoComplete="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        <Field
+          label="Password"
+          type="password"
+          name="password"
+          autoComplete="current-password"
+          placeholder="Your password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          labelAside={<Link to="/ForgotPassword">Forgot password?</Link>}
+        />
+        <label className="check">
+          <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
+          Keep me logged in on this device
+        </label>
+        <Button type="submit" variant="primary" size="lg" block loading={loading}>
+          Log in
+        </Button>
+      </form>
+
+      {MOCK_MODE && (
+        <p className="field-hint" style={{ marginTop: 14 }}>
+          Demo mode: credentials are prefilled.
         </p>
-        <div className="loginContainer">
-          <div className="loginHelper">
-            <form onSubmit={submitHendler}>
-              {error}
-              <label className="email" htmlFor="Email">
-                Email
-              </label>
-              <input
-                className="loginInp"
-                type="email"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-              />
-              <div className="loginPass">
-                <label htmlFor="Password">Password</label>
-                <p onClick={toForgotPassword} className="forgot">
-                  Forgot Password?
-                </p>
-              </div>
-              <input
-                className="loginInp"
-                type="password"
-                value={formData.password}
-                onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
-              />
-              <div className="remember">
-                <input type="checkbox" />
-                <p>Remember Me</p>
-              </div>
-              <button className="loginBtn">Submit</button>
-            </form>
-            <p className="separator">Or continue with </p>
-            <div className="others">
-              <div className="thirdParty">
-                <FcGoogle className="compIcon" />
-                <p>Google</p>
-              </div>
-              <div className="thirdParty">
-                <FaApple className="compIcon" />
-                <p>Apple</p>
-              </div>
-            </div>
-          </div>
-          <div className="toSignIn">
-            <p>Don't have an account?</p>
-            <p onClick={toSignUp} className="toSignInBtn">
-              Sign Up
-            </p>
-          </div>
-        </div>
-        <p className="credentials">© 2026 Stocker Inc. All rights reserved</p>
-      </div>
-    </div>
+      )}
+    </AuthLayout>
   );
 }

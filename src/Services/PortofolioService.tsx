@@ -1,66 +1,14 @@
 import type { portofolioData } from "./Interfaces/PortofolioInterface";
 import type { DailyProfit } from "./Interfaces/ProfitInterface";
 import type { total } from "./Interfaces/TotalInterface";
+import { request } from "../lib/http";
 
-const API_URL = "http://localhost:8080/api/portofolio";
-const token = localStorage.getItem("token");
+const BASE = "/api/portofolio";
 
 const Portofolio = {
-  getData: async (symbol: string): Promise<portofolioData> => {
-    try {
-      const response: Response = await fetch(`${API_URL}/${symbol}`, {
-        method: "GET",
-        headers: {
-          "content-type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Something went wrong");
-      }
-
-      const data: portofolioData = await response.json();
-
-      return data;
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  },
-  getTotal: async (): Promise<total> => {
-    try {
-      const response = await fetch(`${API_URL}/total`, {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!response.ok) {
-        throw new Error("Totol not found");
-      }
-      const data: total = await response.json();
-      return data;
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  },
-  getProfit: async (symbol: string): Promise<DailyProfit> => {
-    try {
-      const response: Response = await fetch(`${API_URL}/profit/${symbol}`, {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (!response.ok) {
-        throw new Error("Sorry something went wrong");
-      }
-      const data: DailyProfit = await response.json();
-      return data;
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  },
+  getData: (symbol: string) => request<portofolioData>(`${BASE}/${encodeURIComponent(symbol)}`),
+  getTotal: () => request<total>(`${BASE}/total`),
+  getProfit: (symbol: string) => request<DailyProfit>(`${BASE}/profit/${encodeURIComponent(symbol)}`),
 };
 
 export default Portofolio;

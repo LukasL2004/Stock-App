@@ -1,25 +1,17 @@
 .footer {
-  width: 100%;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-3);
+  font-size: 0.8125rem;
+}
+.footer-inner {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 16px var(--gutter);
   display: flex;
   justify-content: space-between;
-  background-color: #fff;
-  color: #9197a0;
-  flex-direction: row;
-  padding: 0.5rem 0;
-  border-top: 0.3px solid rgb(226, 226, 226);
+  gap: 16px;
+  flex-wrap: wrap;
 }
-
-.footer p {
-  margin-left: 1rem;
-}
-
-.footer ul {
-  list-style: none;
-  gap: 2rem;
-  display: flex;
-  margin-right: 1rem;
-}
-
-.footer li {
-  text-decoration: none;
-}
+.footer ul { display: flex; gap: 20px; }
+.footer a { color: var(--text-2); }

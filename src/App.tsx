@@ -1,10 +1,6 @@
-import {
-  createBrowserRouter,
-  Outlet,
-  redirect,
-  RouterProvider,
-} from "react-router";
+import { createBrowserRouter, Navigate, Outlet, redirect, RouterProvider, useRouteError, Link } from "react-router";
 import "./App.css";
+import "./Components/UI/ui.css";
 import Login from "./Pages/Login/Login";
 import SignUp from "./Pages/SignUp/signUp";
 import Profile from "./Pages/Profile/profile";
@@ -14,50 +10,74 @@ import ForgotPassword from "./Pages/ForgotPassword/ForgotPassword";
 import Wallet from "./Pages/Wallet/Wallet";
 import Footer from "./Components/Footer/Footer";
 import ChatbaseWidget from "./Components/Reuseable/ChatBot/chatbot";
+import { ThemeProvider } from "./lib/theme";
+import { ToastProvider } from "./lib/toast";
+import { isAuthenticated } from "./lib/auth";
+import Button from "./Components/UI/Button";
 
 function LayoutWithNavbar() {
   return (
     <div className="main-layout">
       <Navbar />
-      <Outlet />
+      <main id="main">
+        <Outlet />
+      </main>
       <Footer />
-      <ChatbaseWidget></ChatbaseWidget>
+      <ChatbaseWidget />
     </div>
   );
 }
 
-function App() {
-  const isAuthenticated = () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      return redirect("/Login");
-    }
-    return null;
-  };
-
-  const router = createBrowserRouter([
-    { path: "/", loader: () => redirect("/Login") },
-    { path: "Login", element: <Login /> },
-    { path: "SignUp", element: <SignUp /> },
-    { path: "ForgotPassword", element: <ForgotPassword /> },
-
-    {
-      path: "/",
-      loader: isAuthenticated,
-      element: <LayoutWithNavbar />,
-      children: [
-        { path: "Profile", element: <Profile /> },
-        { path: "LandingPage", element: <LandingPage /> },
-        { path: "Wallet", element: <Wallet /> },
-      ],
-    },
-  ]);
-
+function RouteError() {
+  const error = useRouteError() as { status?: number; statusText?: string } | undefined;
+  const notFound = error?.status === 404;
   return (
-    <div className="app">
-      <RouterProvider router={router} />
+    <div className="page" style={{ minHeight: "60vh", display: "grid", placeItems: "center", textAlign: "center" }}>
+      <div>
+        <h1 style={{ fontSize: "1.5rem" }}>{notFound ? "Page not found" : "Something went wrong"}</h1>
+        <p className="muted" style={{ margin: "8px 0 20px" }}>
+          {notFound ? "The page you are looking for does not exist." : "Reload the page or go back to your dashboard."}
+        </p>
+        <Link to="/dashboard">
+          <Button variant="primary">Go to dashboard</Button>
+        </Link>
+      </div>
     </div>
   );
 }
 
-export default App;
+const requireAuth = () => (isAuthenticated() ? null : redirect("/Login"));
+const redirectIfAuthed = () => (isAuthenticated() ? redirect("/dashboard") : null);
+
+const router = createBrowserRouter([
+  { path: "/", loader: () => redirect(isAuthenticated() ? "/dashboard" : "/Login") },
+  { path: "Login", element: <Login />, loader: redirectIfAuthed },
+  { path: "SignUp", element: <SignUp />, loader: redirectIfAuthed },
+  { path: "ForgotPassword", element: <ForgotPassword /> },
+  {
+    path: "/",
+    loader: requireAuth,
+    element: <LayoutWithNavbar />,
+    errorElement: <RouteError />,
+    children: [
+      { path: "dashboard", element: <LandingPage /> },
+      { path: "portfolio", element: <Wallet /> },
+      { path: "profile", element: <Profile /> },
+      // Legacy paths kept so old links keep working
+      { path: "LandingPage", element: <Navigate to="/dashboard" replace /> },
+      { path: "Wallet", element: <Navigate to="/portfolio" replace /> },
+      { path: "Profile", element: <Navigate to="/profile" replace /> },
+      { path: "*", element: <RouteError /> },
+    ],
+  },
+]);
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <ToastProvider>
+        <RouterProvider router={router} />
+      </ToastProvider>
+    </ThemeProvider>
+  );
+}

@@ -16,7 +16,6 @@ node_modules
 dist
 dist-ssr
 *.local
-public
 
 # Editor directories and files
 .vscode/*
@@ -29,3 +28,7 @@ public
 *.sln
 *.sw?
 
+# unused generated artwork kept locally
+public/stock.avif
+public/stock_enhanced.png
+public/stock_improved.png
