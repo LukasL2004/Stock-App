@@ -1,8 +1,9 @@
-.chart { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.chart { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .chart-canvas { position: relative; width: 100%; min-width: 0; overflow: hidden; }
 .chart-date {
-  position: absolute; top: 2px; transform: translateX(-50%);
-  font-size: 0.75rem; color: var(--text-2); background: var(--bg); padding: 0 6px; white-space: nowrap; pointer-events: none; z-index: 2;
+  position: absolute; top: 4px; transform: translateX(-50%);
+  font-size: 0.75rem; font-weight: 500; color: var(--text-2);
+  background: var(--bg); padding: 2px 8px; border-radius: 6px; white-space: nowrap; pointer-events: none; z-index: 2;
 }
 .chart-loading {
   position: absolute; inset: 24px 0 0;
@@ -12,4 +13,6 @@
   mask: linear-gradient(to top, transparent, #000 40%);
 }
 .chart-empty { position: absolute; inset: 0; display: grid; place-items: center; color: var(--text-3); }
-.chart-ranges { padding-top: 6px; border-top: 1px solid var(--border); }
+.chart-ranges { padding-top: 4px; }
+/* keep the lightweight-charts axis text quiet */
+.chart-canvas canvas { border-radius: 0; }
