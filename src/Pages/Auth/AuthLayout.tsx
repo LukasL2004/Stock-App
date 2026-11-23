@@ -16,7 +16,7 @@ export default function AuthLayout({ title, subtitle, children, footer }: { titl
     <div className="auth">
       <header className="auth-top">
         <Link to="/" aria-label={t("common.appName")} className="auth-brand">
-          <Logo size={26} />
+          <Logo size={22} />
         </Link>
         <div className="auth-tools">
           <LanguageMenu />

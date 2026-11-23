@@ -25,8 +25,9 @@
 
 .brand { display: flex; align-items: center; color: var(--text); }
 .brand:hover { text-decoration: none; }
-.logo { display: inline-flex; align-items: center; gap: 8px; }
-.logo-word { font-weight: 700; font-size: 1.125rem; letter-spacing: -0.04em; color: var(--text); }
+.logo { display: inline-flex; align-items: flex-start; gap: 3px; font-size: 1.1875rem; line-height: 1; }
+.logo-word { font-weight: 700; font-size: 1em; letter-spacing: -0.045em; color: var(--text); }
+.logo-dot { width: 0.42em; height: 0.42em; border-radius: 0.1em; background: var(--up-vivid); margin-top: -0.05em; }
 
 .nav-search {
   display: flex;
