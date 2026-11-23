@@ -1,9 +1,11 @@
 import { useState } from "react";
 import type { AuditLogInterface } from "../../Services/Interfaces/AuditLogInterface";
-import { companyName, money, shares as fmtShares } from "../../lib/format";
+import { companyName, money, shares as fmtShares, time } from "../../lib/format";
 import Skeleton from "../UI/Skeleton";
 import TickerLogo from "../UI/TickerLogo";
 import Button from "../UI/Button";
+import { useI18n } from "../../i18n/useI18n";
+import { getLocale } from "../../i18n/core";
 
 interface Props {
   items?: AuditLogInterface[];
@@ -11,25 +13,21 @@ interface Props {
   pageSize?: number;
 }
 
-function dayKey(raw: string): string {
+function dayKey(raw: string, today: string, yesterday: string): string {
   const d = new Date(raw);
   if (Number.isNaN(d.getTime())) return raw;
-  const today = new Date();
+  const now = new Date();
   const yest = new Date();
-  yest.setDate(today.getDate() - 1);
+  yest.setDate(now.getDate() - 1);
   const same = (a: Date, b: Date) => a.toDateString() === b.toDateString();
-  if (same(d, today)) return "Today";
-  if (same(d, yest)) return "Yesterday";
-  return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: d.getFullYear() === today.getFullYear() ? undefined : "numeric" });
+  if (same(d, now)) return today;
+  if (same(d, yest)) return yesterday;
+  return d.toLocaleDateString(getLocale(), { month: "long", day: "numeric", year: d.getFullYear() === now.getFullYear() ? undefined : "numeric" });
 }
 
-function timeOf(raw: string): string {
-  const d = new Date(raw);
-  return Number.isNaN(d.getTime()) ? "" : d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-}
-
-/** Activity grouped by day, newest first: "Bought AAPL", "Sold TSLA". */
+/** Activity grouped by day, newest first: "Bought Apple", "Sold Tesla". */
 export default function ActivityList({ items, loading = false, pageSize = 10 }: Props) {
+  const { t } = useI18n();
   const [shown, setShown] = useState(pageSize);
 
   if (loading && !items) {
@@ -51,19 +49,19 @@ export default function ActivityList({ items, loading = false, pageSize = 10 }: 
   if (!items?.length) {
     return (
       <div className="empty">
-        <h3>No activity yet</h3>
-        <p>Your buys and sells will show up here, grouped by day.</p>
+        <h3>{t("activity.emptyTitle")}</h3>
+        <p>{t("activity.emptyBody")}</p>
       </div>
     );
   }
 
   const slice = items.slice(0, shown);
   const groups: { day: string; rows: AuditLogInterface[] }[] = [];
-  for (const t of slice) {
-    const k = dayKey(t.date);
+  for (const row of slice) {
+    const k = dayKey(row.date, t("common.today"), t("common.yesterday"));
     const g = groups[groups.length - 1];
-    if (g && g.day === k) g.rows.push(t);
-    else groups.push({ day: k, rows: [t] });
+    if (g && g.day === k) g.rows.push(row);
+    else groups.push({ day: k, rows: [row] });
   }
 
   return (
@@ -72,23 +70,22 @@ export default function ActivityList({ items, loading = false, pageSize = 10 }: 
         <section key={g.day} className="activity-day">
           <h3 className="activity-h">{g.day}</h3>
           <ul className="rows">
-            {g.rows.map((t, i) => {
-              const sell = (t.action ?? "BUY").toUpperCase() === "SELL";
+            {g.rows.map((row, i) => {
+              const sell = (row.action ?? "BUY").toUpperCase() === "SELL";
+              const at = time(row.date);
               return (
-                <li key={t.id ?? `${t.date}-${i}`} className="row">
-                  <TickerLogo symbol={t.symbol} />
+                <li key={row.id ?? `${row.date}-${i}`} className="row">
+                  <TickerLogo symbol={row.symbol} />
                   <span className="row-id">
-                    <strong>
-                      {sell ? "Sold" : "Bought"} {companyName(t.symbol)}
-                    </strong>
+                    <strong>{t(sell ? "activity.sold" : "activity.bought", { name: companyName(row.symbol) })}</strong>
                     <span className="num">
-                      {fmtShares(t.shares)} shares at {money(t.price)}
-                      {timeOf(t.date) ? ` · ${timeOf(t.date)}` : ""}
+                      {t("activity.line", { shares: fmtShares(row.shares), price: money(row.price) })}
+                      {at ? ` · ${at}` : ""}
                     </span>
                   </span>
                   <span className="row-end">
-                    <strong className={`num${sell ? " up" : ""}`}>{sell ? `+${money(t.total)}` : `-${money(t.total)}`}</strong>
-                    <span>{sell ? "To cash" : "From cash"}</span>
+                    <strong className={`num${sell ? " up" : ""}`}>{sell ? `+${money(row.total)}` : `-${money(row.total)}`}</strong>
+                    <span>{sell ? t("activity.toCash") : t("activity.fromCash")}</span>
                   </span>
                 </li>
               );
@@ -99,7 +96,7 @@ export default function ActivityList({ items, loading = false, pageSize = 10 }: 
       {shown < items.length && (
         <div className="pager">
           <Button variant="secondary" onClick={() => setShown((s) => s + pageSize)}>
-            Show more ({items.length - shown} left)
+            {t("common.showMore", { n: items.length - shown })}
           </Button>
         </div>
       )}

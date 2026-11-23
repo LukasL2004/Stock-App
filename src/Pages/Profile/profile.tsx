@@ -19,8 +19,11 @@ import { useRealtime } from "../../lib/useRealtime";
 import { useLoad } from "../../lib/useLoad";
 import { useToast } from "../../lib/useToast";
 import { errorMessage, MOCK_MODE } from "../../lib/http";
+import { useI18n } from "../../i18n/useI18n";
+import { LANGS, LANG_NAMES, type Lang } from "../../i18n/core";
 
 export default function Profile() {
+  const { t, lang, setLang } = useI18n();
   const navigate = useNavigate();
   const toast = useToast();
   const { pref, setPref } = useTheme();
@@ -31,15 +34,15 @@ export default function Profile() {
   const [modal, setModal] = useState<"deposit" | "withdraw" | "activity" | null>(null);
 
   const load = useCallback(async () => {
-    const [u, w, t] = await Promise.allSettled([authService.getUser(), WalletService.Balance(), Portofolio.getTotal()]);
+    const [u, w, tot] = await Promise.allSettled([authService.getUser(), WalletService.Balance(), Portofolio.getTotal()]);
     if (u.status === "fulfilled") setUser(u.value);
-    else toast.error("Could not load your profile", errorMessage(u.reason));
+    else toast.error(t("profile.errLoad"), errorMessage(u.reason));
     if (w.status === "fulfilled") {
       setBalance(w.value.balance);
       setDeposited(w.value.investment);
     }
-    if (t.status === "fulfilled") setHoldings(t.value.marketValue ?? t.value.total);
-  }, [toast]);
+    if (tot.status === "fulfilled") setHoldings(tot.value.marketValue ?? tot.value.total);
+  }, [toast, t]);
   useLoad(load);
   useRealtime(load);
 
@@ -49,9 +52,9 @@ export default function Profile() {
   };
 
   const themes: { value: ThemePref; label: string }[] = [
-    { value: "light", label: "Light" },
-    { value: "dark", label: "Dark" },
-    { value: "system", label: "Auto" },
+    { value: "light", label: t("profile.light") },
+    { value: "dark", label: t("profile.dark") },
+    { value: "system", label: t("profile.auto") },
   ];
 
   return (
@@ -81,42 +84,42 @@ export default function Profile() {
 
       <dl className="kv profile-kv">
         <div>
-          <dt>Cash</dt>
+          <dt>{t("common.cash")}</dt>
           <dd className="num">{balance === undefined ? <Skeleton w={90} h={16} /> : money(balance)}</dd>
         </div>
         <div>
-          <dt>Holdings</dt>
+          <dt>{t("profile.holdings")}</dt>
           <dd className="num">{holdings === undefined ? <Skeleton w={90} h={16} /> : money(holdings)}</dd>
         </div>
         <div>
-          <dt>Deposited to date</dt>
+          <dt>{t("wallet.deposited")}</dt>
           <dd className="num">{deposited === undefined ? <Skeleton w={90} h={16} /> : money(deposited)}</dd>
         </div>
       </dl>
 
       <section className="section">
         <div className="section-title">
-          <h2>Money</h2>
+          <h2>{t("profile.money")}</h2>
         </div>
         <ul className="rows settings">
           <li>
             <button className="row" onClick={() => setModal("deposit")}>
               <span className="settings-icon"><IoAdd /></span>
-              <span className="row-id"><strong>Add funds</strong><span>Top up the cash you can invest</span></span>
+              <span className="row-id"><strong>{t("wallet.addFunds")}</strong><span>{t("profile.addFundsSub")}</span></span>
               <IoChevronForward className="settings-chev" aria-hidden="true" />
             </button>
           </li>
           <li>
             <button className="row" onClick={() => setModal("withdraw")} disabled={!balance}>
               <span className="settings-icon"><IoArrowDown /></span>
-              <span className="row-id"><strong>Withdraw</strong><span>Move cash out of your account</span></span>
+              <span className="row-id"><strong>{t("wallet.withdraw")}</strong><span>{t("profile.withdrawSub")}</span></span>
               <IoChevronForward className="settings-chev" aria-hidden="true" />
             </button>
           </li>
           <li>
             <button className="row" onClick={() => setModal("activity")}>
               <span className="settings-icon"><IoTimeOutline /></span>
-              <span className="row-id"><strong>Activity</strong><span>Every buy and sell on your account</span></span>
+              <span className="row-id"><strong>{t("wallet.activity")}</strong><span>{t("profile.activitySub")}</span></span>
               <IoChevronForward className="settings-chev" aria-hidden="true" />
             </button>
           </li>
@@ -125,11 +128,11 @@ export default function Profile() {
 
       <section className="section">
         <div className="section-title">
-          <h2>Appearance</h2>
+          <h2>{t("profile.appearance")}</h2>
         </div>
         <div className="settings-line">
-          <span className="row-id"><strong>Theme</strong><span>Auto follows your device setting</span></span>
-          <div className="segmented" role="group" aria-label="Theme">
+          <span className="row-id"><strong>{t("profile.theme")}</strong><span>{t("profile.themeSub")}</span></span>
+          <div className="segmented" role="group" aria-label={t("profile.theme")}>
             {themes.map((o) => (
               <button key={o.value} aria-pressed={pref === o.value} onClick={() => setPref(o.value)}>
                 {o.label}
@@ -137,16 +140,26 @@ export default function Profile() {
             ))}
           </div>
         </div>
+        <div className="settings-line" style={{ marginTop: 18 }}>
+          <span className="row-id"><strong>{t("common.language")}</strong><span>{t("profile.languageSub")}</span></span>
+          <select className="select" aria-label={t("common.language")} value={lang} onChange={(e) => setLang(e.target.value as Lang)}>
+            {LANGS.map((l) => (
+              <option key={l} value={l} lang={l}>
+                {LANG_NAMES[l]}
+              </option>
+            ))}
+          </select>
+        </div>
       </section>
 
       <section className="section">
         <div className="settings-line">
           <span className="row-id">
-            <strong>Log out</strong>
-            <span>{MOCK_MODE ? "Demo mode: data lives in this browser only." : "You will need your password to log back in."}</span>
+            <strong>{t("nav.logout")}</strong>
+            <span>{MOCK_MODE ? t("profile.logoutDemo") : t("profile.logoutReal")}</span>
           </span>
           <Button variant="danger" onClick={logout}>
-            Log out
+            {t("nav.logout")}
           </Button>
         </div>
       </section>

@@ -8,7 +8,8 @@ import type { Stock, Chart } from "../../Services/Interfaces/StockInfoInterface"
 import type { portofolioData } from "../../Services/Interfaces/PortofolioInterface";
 import type { total } from "../../Services/Interfaces/TotalInterface";
 import Charts from "../../Components/Charts/Charts";
-import { ALL_RANGES, hasIntraday, rangeLabel, sliceRange, type Point, type Range } from "../../Components/Charts/ranges";
+import { ALL_RANGES, hasIntraday, sliceRange, type Point, type Range } from "../../Components/Charts/ranges";
+import { useI18n } from "../../i18n/useI18n";
 import OrderTicket from "../../Components/Trade/OrderTicket";
 import StockList from "../../Components/Trade/StockList";
 import BuyPopUp from "../../Components/PopUp/FinancePops/BuyPopUp";
@@ -17,7 +18,7 @@ import Button from "../../Components/UI/Button";
 import Change from "../../Components/UI/Change";
 import Skeleton from "../../Components/UI/Skeleton";
 import TickerLogo from "../../Components/UI/TickerLogo";
-import { companyName, date as fmtDate, matchStock, money, pct, shares as fmtShares } from "../../lib/format";
+import { companyName, date as fmtDate, integer, matchStock, money, pct, shares as fmtShares } from "../../lib/format";
 import { useRealtime } from "../../lib/useRealtime";
 import { useLoad } from "../../lib/useLoad";
 import { useToast } from "../../lib/useToast";
@@ -40,6 +41,7 @@ function toPoints(rows: Chart[]): Record<string, Point[]> {
 }
 
 export default function LandingPage() {
+  const { t } = useI18n();
   const toast = useToast();
   const [params, setParams] = useSearchParams();
   const query = params.get("q") ?? "";
@@ -62,9 +64,9 @@ export default function LandingPage() {
     try {
       setStocks(await StockData.stocks());
     } catch (e) {
-      toast.error("Could not load prices", errorMessage(e));
+      toast.error(t("stock.errPrices"), errorMessage(e));
     }
-  }, [toast]);
+  }, [toast, t]);
 
   const loadAccount = useCallback(async () => {
     const [t, w] = await Promise.allSettled([Portofolio.getTotal(), WalletService.Balance()]);
@@ -87,11 +89,11 @@ export default function LandingPage() {
     try {
       setSeries(toPoints(await StockData.chartData()));
     } catch (e) {
-      toast.error("Could not load chart history", errorMessage(e));
+      toast.error(t("stock.errHistory"), errorMessage(e));
     } finally {
       setChartsLoading(false);
     }
-  }, [loadMarket, loadAccount, toast]);
+  }, [loadMarket, loadAccount, toast, t]);
   useLoad(loadInitial);
 
   const loadCurrent = useCallback(() => loadSymbol(symbol), [loadSymbol, symbol]);
@@ -171,7 +173,7 @@ export default function LandingPage() {
                   {money(shownPrice)}
                 </div>
                 <div className="stock-change">
-                  <Change kind="both" value={rangeChange} pctValue={rangePct} label={hover ? fmtDate(new Date(hover.time * 1000).toISOString()) : rangeLabel(effectiveRange)} />
+                  <Change kind="both" value={rangeChange} pctValue={rangePct} label={hover ? fmtDate(new Date(hover.time * 1000)) : t(`chart.${effectiveRange}`)} />
                 </div>
               </>
             ) : (
@@ -187,89 +189,87 @@ export default function LandingPage() {
 
           <section className="section">
             <div className="section-title">
-              <h2>Your position</h2>
-              {owns && <span className="tag num">{pct(weight, { sign: false })} of holdings</span>}
+              <h2>{t("stock.position")}</h2>
+              {owns && <span className="tag num">{t("stock.ofHoldings", { pct: pct(weight, { sign: false }) })}</span>}
             </div>
             {!position ? (
               <Skeleton h={60} />
             ) : owns ? (
               <dl className="kv">
                 <div>
-                  <dt>Shares</dt>
+                  <dt>{t("common.shares")}</dt>
                   <dd className="num">{fmtShares(position.shares)}</dd>
                 </div>
                 <div>
-                  <dt>Market value</dt>
+                  <dt>{t("stock.marketValue")}</dt>
                   <dd className="num">{money(marketValue)}</dd>
                 </div>
                 <div>
-                  <dt>Average cost</dt>
+                  <dt>{t("stock.avgCost")}</dt>
                   <dd className="num">{money(position.averagePrice)}</dd>
                 </div>
                 <div>
-                  <dt>Total return</dt>
+                  <dt>{t("stock.totalReturn")}</dt>
                   <dd>
                     <Change kind="both" value={ret} pctValue={retPct} />
                   </dd>
                 </div>
                 <div>
-                  <dt>Today&apos;s return</dt>
+                  <dt>{t("stock.todayReturn")}</dt>
                   <dd>
                     <Change kind="both" value={dayChange * position.shares} pctValue={dayPct} />
                   </dd>
                 </div>
                 <div>
-                  <dt>Invested</dt>
+                  <dt>{t("stock.invested")}</dt>
                   <dd className="num">{money(invested)}</dd>
                 </div>
               </dl>
             ) : (
               <div className="empty">
-                <h3>You don&apos;t own {symbol} yet</h3>
-                <p>
-                  {money(100)} buys about <span className="num">{price ? fmtShares(100 / price) : "–"}</span> shares at today&apos;s price. Use the order ticket to get started.
-                </p>
+                <h3>{t("stock.notOwned", { symbol })}</h3>
+                <p>{t("stock.notOwnedBody", { amount: money(100), shares: price ? fmtShares(100 / price) : "–" })}</p>
               </div>
             )}
           </section>
 
           <section className="section">
             <div className="section-title">
-              <h2>Key statistics</h2>
+              <h2>{t("stock.keyStats")}</h2>
             </div>
             <dl className="kv kv-4">
               <div>
-                <dt>Open</dt>
+                <dt>{t("stock.open")}</dt>
                 <dd className="num">{money(stock?.open)}</dd>
               </div>
               <div>
-                <dt>High</dt>
+                <dt>{t("stock.high")}</dt>
                 <dd className="num">{money(stock?.high)}</dd>
               </div>
               <div>
-                <dt>Low</dt>
+                <dt>{t("stock.low")}</dt>
                 <dd className="num">{money(stock?.low)}</dd>
               </div>
               <div>
-                <dt>Today</dt>
+                <dt>{t("common.today")}</dt>
                 <dd>
                   <Change kind="both" value={dayChange} pctValue={dayPct} />
                 </dd>
               </div>
               <div>
-                <dt>52-week high</dt>
+                <dt>{t("stock.high52")}</dt>
                 <dd className="num">{money(yearHigh)}</dd>
               </div>
               <div>
-                <dt>52-week low</dt>
+                <dt>{t("stock.low52")}</dt>
                 <dd className="num">{money(yearLow)}</dd>
               </div>
               <div>
-                <dt>Volume</dt>
-                <dd className="num">{stock?.volume && stock.volume !== "0" ? Number(stock.volume).toLocaleString("en-US") : "–"}</dd>
+                <dt>{t("stock.volume")}</dt>
+                <dd className="num">{stock?.volume && stock.volume !== "0" ? integer(Number(stock.volume)) : "–"}</dd>
               </div>
               <div>
-                <dt>Last update</dt>
+                <dt>{t("stock.lastUpdate")}</dt>
                 <dd>{stock ? fmtDate(stock.date, true) : "–"}</dd>
               </div>
             </dl>
@@ -277,7 +277,7 @@ export default function LandingPage() {
 
           <section className="section stock-list-inline">
             <div className="section-title">
-              <h2>Stocks</h2>
+              <h2>{t("stock.list")}</h2>
             </div>
             <StockList stocks={stocks} sparks={sparks} selected={symbol} onSelect={setSymbol} filter={query} />
           </section>
@@ -287,17 +287,17 @@ export default function LandingPage() {
           {stock && <OrderTicket symbol={symbol} price={price} cash={cash} sharesOwned={position?.shares ?? 0} onDone={refreshAll} />}
           <Link to="/portfolio" className="side-account">
             <span className="row-id">
-              <span>Portfolio value</span>
+              <span>{t("stock.portfolioValue")}</span>
               <strong className="num">{totals && cash !== undefined ? money(accountValue) : "–"}</strong>
             </span>
             <span className="row-end">
-              <span>Cash</span>
+              <span>{t("common.cash")}</span>
               <strong className="num">{cash === undefined ? "–" : money(cash)}</strong>
             </span>
           </Link>
           <section className="side-list">
             <div className="section-title">
-              <h2>Stocks</h2>
+              <h2>{t("stock.list")}</h2>
             </div>
             <StockList stocks={stocks} sparks={sparks} selected={symbol} onSelect={setSymbol} filter={query} />
           </section>
@@ -306,10 +306,10 @@ export default function LandingPage() {
 
       <div className="trade-bar">
         <Button variant="up" size="lg" onClick={() => setModal("buy")} disabled={!stock}>
-          Buy
+          {t("stock.buy")}
         </Button>
         <Button variant="secondary" size="lg" onClick={() => setModal("sell")} disabled={!stock || !owns}>
-          Sell
+          {t("stock.sell")}
         </Button>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { clearSession, getToken } from "./auth";
+import { translate } from "../i18n/core";
 
 export const API_URL = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") ?? "http://localhost:8080";
 export const WS_URL = `${API_URL}/ws`;
@@ -25,17 +26,20 @@ interface Options {
   parse?: "json" | "text";
 }
 
-const FRIENDLY: Record<number, string> = {
-  400: "That request could not be processed.",
-  401: "Your session has expired. Please log in again.",
-  403: "You do not have access to that.",
-  404: "We could not find what you asked for.",
-  409: "That already exists.",
-  500: "Something went wrong on our side. Try again in a moment.",
-};
+function friendly(status: number): string {
+  switch (status) {
+    case 400: return translate("err.400");
+    case 401: return translate("err.401");
+    case 403: return translate("err.403");
+    case 404: return translate("err.404");
+    case 409: return translate("err.409");
+    case 500: return translate("err.500");
+    default: return translate("err.failed", { status });
+  }
+}
 
 async function readError(res: Response): Promise<ApiError> {
-  let message = FRIENDLY[res.status] ?? `Request failed (${res.status}).`;
+  let message = friendly(res.status);
   let fields: Record<string, string> | undefined;
   try {
     const text = await res.text();
@@ -80,7 +84,7 @@ export async function request<T>(path: string, opts: Options = {}): Promise<T> {
       body: body === undefined ? undefined : JSON.stringify(body),
     });
   } catch {
-    throw new ApiError("Cannot reach the server. Check your connection and try again.", 0);
+    throw new ApiError(translate("err.network"), 0);
   }
 
   if (res.status === 401 && auth) {
@@ -88,7 +92,7 @@ export async function request<T>(path: string, opts: Options = {}): Promise<T> {
     if (!window.location.pathname.toLowerCase().startsWith("/login")) {
       window.location.assign("/Login?expired=1");
     }
-    throw new ApiError(FRIENDLY[401], 401);
+    throw new ApiError(friendly(401), 401);
   }
 
   if (!res.ok) throw await readError(res);
@@ -102,5 +106,5 @@ export async function request<T>(path: string, opts: Options = {}): Promise<T> {
 export function errorMessage(e: unknown): string {
   if (e instanceof ApiError) return e.message;
   if (e instanceof Error) return e.message;
-  return "Something went wrong.";
+  return translate("err.generic");
 }

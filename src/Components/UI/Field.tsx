@@ -1,5 +1,6 @@
 import { useId, useState, type InputHTMLAttributes, type ReactNode } from "react";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
+import { useI18n } from "../../i18n/useI18n";
 
 interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, "id"> {
   label: string;
@@ -10,6 +11,7 @@ interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, "id"> {
 }
 
 export default function Field({ label, error, hint, labelAside, start, type, className = "", ...rest }: Props) {
+  const { t } = useI18n();
   const id = useId();
   const [show, setShow] = useState(false);
   const isPassword = type === "password";
@@ -27,7 +29,7 @@ export default function Field({ label, error, hint, labelAside, start, type, cla
         <input id={id} type={inputType} aria-invalid={!!error || undefined} aria-describedby={describedBy} {...rest} />
         {isPassword && (
           <span className="input-adorn input-adorn-end">
-            <button type="button" onClick={() => setShow((s) => !s)} aria-label={show ? "Hide password" : "Show password"} aria-pressed={show}>
+            <button type="button" onClick={() => setShow((s) => !s)} aria-label={show ? t("auth.hidePassword") : t("auth.showPassword")} aria-pressed={show}>
               {show ? <IoEyeOffOutline /> : <IoEyeOutline />}
             </button>
           </span>

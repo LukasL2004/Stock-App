@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useRef, useState, type ReactNode } from "react";
 import { ToastContext, type ToastApi } from "./useToast";
+import { useI18n } from "../i18n/useI18n";
 import { IoCheckmarkCircle, IoCloseCircle, IoInformationCircle, IoClose } from "react-icons/io5";
 
 type Kind = "success" | "error" | "info";
@@ -12,6 +13,7 @@ interface Toast {
 
 
 export function ToastProvider({ children }: { children: ReactNode }) {
+  const { t: tr } = useI18n();
   const [items, setItems] = useState<Toast[]>([]);
   const seq = useRef(0);
 
@@ -48,7 +50,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               <p className="toast-title">{t.title}</p>
               {t.detail && <p className="toast-detail">{t.detail}</p>}
             </div>
-            <button className="toast-close" aria-label="Dismiss" onClick={() => dismiss(t.id)}>
+            <button className="toast-close" aria-label={tr("toast.dismiss")} onClick={() => dismiss(t.id)}>
               <IoClose />
             </button>
           </div>

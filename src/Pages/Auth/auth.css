@@ -22,3 +22,4 @@
 .auth-steps span.on { background: var(--text); }
 .code-input input { letter-spacing: 0.4em; font-weight: 600; font-size: 1.125rem; }
 @media (max-width: 420px) { .auth-row { grid-template-columns: 1fr; } }
+.auth-tools { display: flex; align-items: center; gap: 6px; }

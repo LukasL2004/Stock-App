@@ -6,10 +6,6 @@ export interface Point {
 export type Range = "1D" | "1W" | "1M" | "3M" | "1Y" | "ALL";
 export const ALL_RANGES: Range[] = ["1D", "1W", "1M", "3M", "1Y", "ALL"];
 
-export function rangeLabel(r: Range): string {
-  return { "1D": "Today", "1W": "Past week", "1M": "Past month", "3M": "Past 3 months", "1Y": "Past year", ALL: "All time" }[r];
-}
-
 /** True when the newest trading day has more than a couple of points (15-minute bars). */
 export function hasIntraday(points: Point[]): boolean {
   if (points.length < 3) return false;

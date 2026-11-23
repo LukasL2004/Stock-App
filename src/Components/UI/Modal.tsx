@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { IoClose } from "react-icons/io5";
+import { useI18n } from "../../i18n/useI18n";
 
 interface Props {
   title: string;
@@ -13,6 +14,7 @@ interface Props {
 const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])';
 
 export default function Modal({ title, description, onClose, children, wide }: Props) {
+  const { t } = useI18n();
   const ref = useRef<HTMLDivElement>(null);
   const titleId = useId();
   const descId = useId();
@@ -68,7 +70,7 @@ export default function Modal({ title, description, onClose, children, wide }: P
             <h2 id={titleId}>{title}</h2>
             {description && <p id={descId}>{description}</p>}
           </div>
-          <button className="btn btn-ghost btn-icon btn-sm" onClick={onClose} aria-label="Close">
+          <button className="btn btn-ghost btn-icon btn-sm" onClick={onClose} aria-label={t("modal.close")}>
             <IoClose />
           </button>
         </div>

@@ -6,8 +6,10 @@ import Field from "../../Components/UI/Field";
 import Button from "../../Components/UI/Button";
 import FormError from "../../Components/UI/FormError";
 import { errorMessage } from "../../lib/http";
+import { useI18n } from "../../i18n/useI18n";
 
 export default function ForgotPassword() {
+  const { t } = useI18n();
   const navigate = useNavigate();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [email, setEmail] = useState("");
@@ -20,14 +22,14 @@ export default function ForgotPassword() {
   const sendCode = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
-    if (!email.trim()) return setError("Enter the email you signed up with.");
+    if (!email.trim()) return setError(t("auth.forgot.enterEmail"));
     setLoading(true);
     try {
       const res = await authService.ForgotPassword({ email: email.trim() });
-      setStatus(res || "We sent a 6-digit code to your email. It expires in 5 minutes.");
+      setStatus(res && !res.startsWith("Check your email") ? res : t("auth.forgot.sent"));
       setStep(2);
     } catch (err) {
-      setError(errorMessage(err) === "User not found" ? "No account matches that email." : errorMessage(err));
+      setError(errorMessage(err) === "User not found" ? t("auth.login.noMatch") : errorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -36,8 +38,8 @@ export default function ForgotPassword() {
   const reset = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
-    if (code.trim().length !== 6) return setError("The code has 6 digits.");
-    if (password.length < 8) return setError("Use at least 8 characters for the new password.");
+    if (code.trim().length !== 6) return setError(t("auth.forgot.codeLen"));
+    if (password.length < 8) return setError(t("auth.forgot.pwdLen"));
     setLoading(true);
     try {
       await authService.ResetPassword({ email: email.trim(), code: code.trim(), password });
@@ -51,11 +53,11 @@ export default function ForgotPassword() {
 
   return (
     <AuthLayout
-      title={step === 3 ? "Password updated" : "Reset your password"}
-      subtitle={step === 1 ? "We will email you a one-time code." : step === 2 ? `Enter the code we sent to ${email.trim()}.` : "You can log in with your new password."}
+      title={step === 3 ? t("auth.forgot.done") : t("auth.forgot.title")}
+      subtitle={step === 1 ? t("auth.forgot.sub1") : step === 2 ? t("auth.forgot.sub2", { email: email.trim() }) : t("auth.forgot.sub3")}
       footer={
         <>
-          Remembered it? <Link to="/Login">Back to log in</Link>
+          {t("auth.forgot.remembered")} <Link to="/Login">{t("auth.forgot.back")}</Link>
         </>
       }
     >
@@ -68,9 +70,9 @@ export default function ForgotPassword() {
       {step === 1 && (
         <form className="auth-form" onSubmit={sendCode} noValidate>
           <FormError message={error} />
-          <Field label="Email" type="email" autoComplete="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <Field label={t("auth.email")} type="email" autoComplete="email" placeholder={t("auth.emailPlaceholder")} value={email} onChange={(e) => setEmail(e.target.value)} required />
           <Button type="submit" variant="primary" size="lg" block loading={loading}>
-            Send code
+            {t("auth.forgot.send")}
           </Button>
         </form>
       )}
@@ -81,7 +83,7 @@ export default function ForgotPassword() {
           <FormError message={error} />
           <Field
             className="code-input"
-            label="6-digit code"
+            label={t("auth.forgot.code")}
             inputMode="numeric"
             autoComplete="one-time-code"
             maxLength={6}
@@ -90,21 +92,21 @@ export default function ForgotPassword() {
             onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
             required
           />
-          <Field label="New password" type="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} hint="At least 8 characters." required />
+          <Field label={t("auth.forgot.newPassword")} type="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} hint={t("auth.signup.hint")} required />
           <Button type="submit" variant="primary" size="lg" block loading={loading}>
-            Set new password
+            {t("auth.forgot.set")}
           </Button>
           <Button variant="ghost" block onClick={() => { setStep(1); setStatus(null); setError(null); }}>
-            Use a different email
+            {t("auth.forgot.otherEmail")}
           </Button>
         </form>
       )}
 
       {step === 3 && (
         <div className="auth-form">
-          <FormError message="Your password has been changed. A confirmation email is on its way." ok />
+          <FormError message={t("auth.forgot.changed")} ok />
           <Button variant="primary" size="lg" block onClick={() => navigate("/Login")}>
-            Go to log in
+            {t("auth.forgot.goLogin")}
           </Button>
         </div>
       )}

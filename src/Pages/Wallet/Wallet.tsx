@@ -21,8 +21,10 @@ import { useRealtime } from "../../lib/useRealtime";
 import { useLoad } from "../../lib/useLoad";
 import { useToast } from "../../lib/useToast";
 import { errorMessage } from "../../lib/http";
+import { useI18n } from "../../i18n/useI18n";
 
 export default function Wallet() {
+  const { t } = useI18n();
   const toast = useToast();
   const [totals, setTotals] = useState<total>();
   const [cash, setCash] = useState<number>();
@@ -33,18 +35,18 @@ export default function Wallet() {
   const [modal, setModal] = useState<"deposit" | "withdraw" | null>(null);
 
   const load = useCallback(async () => {
-    const [t, w, s, a] = await Promise.allSettled([Portofolio.getTotal(), WalletService.Balance(), StockData.stocks(), AuditLog.GetAudit()]);
-    if (t.status === "rejected") toast.error("Could not load your portfolio", errorMessage(t.reason));
+    const [tot, w, s, a] = await Promise.allSettled([Portofolio.getTotal(), WalletService.Balance(), StockData.stocks(), AuditLog.GetAudit()]);
+    if (tot.status === "rejected") toast.error(t("wallet.errLoad"), errorMessage(tot.reason));
     if (w.status === "fulfilled") {
       setCash(w.value.balance);
       setDeposited(w.value.investment);
     }
     if (a.status === "fulfilled") setAudit(a.value);
-    if (t.status === "fulfilled") {
-      setTotals(t.value);
+    if (tot.status === "fulfilled") {
+      setTotals(tot.value);
       const prices: Record<string, Stock> = {};
       if (s.status === "fulfilled") for (const st of s.value) prices[st.symbol] = st;
-      const rows = t.value.portfolioChart.filter((p) => p.value > 0);
+      const rows = tot.value.portfolioChart.filter((p) => p.value > 0);
       const list: Holding[] = await Promise.all(
         rows.map(async (p) => {
           try {
@@ -62,7 +64,7 @@ export default function Wallet() {
       setHoldings(list);
       if (list[0]) Portofolio.getProfit(list[0].symbol).then(setDaily).catch(() => setDaily(undefined));
     }
-  }, [toast]);
+  }, [toast, t]);
   useLoad(load);
   useRealtime(load);
 
@@ -80,45 +82,45 @@ export default function Wallet() {
 
       <header className="wallet-hero">
         <div>
-          <p className="muted">Portfolio</p>
+          <p className="muted">{t("wallet.title")}</p>
           {ready ? <div className="wallet-value display num">{money(accountValue)}</div> : <Skeleton w={260} h={52} style={{ marginTop: 6 }} />}
           <div className="wallet-changes">
-            {ready && <Change kind="both" value={totalReturn} pctValue={totalReturnPct} label="All time" />}
-            {daily && <Change kind="both" value={daily.totalPortfolioProfitDaily} pctValue={daily.totalPortfolioProfitDailyPercentage} label="Today" />}
+            {ready && <Change kind="both" value={totalReturn} pctValue={totalReturnPct} label={t("wallet.allTime")} />}
+            {daily && <Change kind="both" value={daily.totalPortfolioProfitDaily} pctValue={daily.totalPortfolioProfitDailyPercentage} label={t("common.today")} />}
           </div>
         </div>
         <div className="wallet-actions">
           <Button variant="primary" icon={<IoAdd />} onClick={() => setModal("deposit")}>
-            Add funds
+            {t("wallet.addFunds")}
           </Button>
           <Button variant="secondary" icon={<IoArrowDown />} onClick={() => setModal("withdraw")} disabled={!cash}>
-            Withdraw
+            {t("wallet.withdraw")}
           </Button>
         </div>
       </header>
 
       <dl className="kv kv-4 wallet-kv">
         <div>
-          <dt>Holdings</dt>
+          <dt>{t("wallet.holdings")}</dt>
           <dd className="num">{ready ? money(holdingsValue) : <Skeleton w={90} h={16} />}</dd>
         </div>
         <div>
-          <dt>Cash</dt>
+          <dt>{t("common.cash")}</dt>
           <dd className="num">{ready ? money(cash) : <Skeleton w={90} h={16} />}</dd>
         </div>
         <div>
-          <dt>Invested</dt>
+          <dt>{t("wallet.invested")}</dt>
           <dd className="num">{ready ? money(invested) : <Skeleton w={90} h={16} />}</dd>
         </div>
         <div>
-          <dt>Deposited to date</dt>
+          <dt>{t("wallet.deposited")}</dt>
           <dd className="num">{deposited === undefined ? <Skeleton w={90} h={16} /> : money(deposited)}</dd>
         </div>
       </dl>
 
       <section className="section">
         <div className="section-title">
-          <h2>Holdings</h2>
+          <h2>{t("wallet.holdings")}</h2>
         </div>
         {!ready ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -134,7 +136,7 @@ export default function Wallet() {
 
       <section className="section">
         <div className="section-title">
-          <h2>Activity</h2>
+          <h2>{t("wallet.activity")}</h2>
         </div>
         <ActivityList items={audit} loading={!audit} pageSize={10} />
       </section>

@@ -7,6 +7,7 @@ import FormError from "../../UI/FormError";
 import { money, parseAmount } from "../../../lib/format";
 import { errorMessage } from "../../../lib/http";
 import { useToast } from "../../../lib/useToast";
+import { useI18n } from "../../../i18n/useI18n";
 
 interface Props {
   onClose: () => void;
@@ -15,21 +16,23 @@ interface Props {
 }
 
 export default function AddFoundsPopUp({ onClose, onDone, balance }: Props) {
+  const { t } = useI18n();
   const toast = useToast();
   const [raw, setRaw] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const amount = parseAmount(raw);
+  const chip = (v: number) => ({ label: money(v).replace(/[.,]00/, ""), value: v });
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
-    if (!(amount > 0)) return setError("Enter an amount to add.");
-    if (amount > 1_000_000) return setError("The maximum single deposit is $1,000,000.");
+    if (!(amount > 0)) return setError(t("modal.deposit.err"));
+    if (amount > 1_000_000) return setError(t("modal.deposit.max", { amount: money(1_000_000) }));
     setLoading(true);
     try {
       await WalletService.AddFounds(amount);
-      toast.success(`${money(amount)} added to your cash balance`);
+      toast.success(t("toast.deposited", { amount: money(amount) }));
       onDone?.();
       onClose();
     } catch (err) {
@@ -40,34 +43,26 @@ export default function AddFoundsPopUp({ onClose, onDone, balance }: Props) {
   };
 
   return (
-    <Modal title="Add funds" description="Top up the virtual cash you can invest." onClose={onClose}>
+    <Modal title={t("modal.deposit.title")} description={t("modal.deposit.desc")} onClose={onClose}>
       <form onSubmit={submit} className="modal-foot" noValidate>
-        <AmountInput
-          label="Amount to add in dollars"
-          value={raw}
-          onChange={(v) => { setRaw(v); setError(null); }}
-          chips={[{ label: "$500", value: 500 }, { label: "$1,000", value: 1000 }, { label: "$5,000", value: 5000 }, { label: "$10,000", value: 10000 }]}
-          autoFocus
-        />
+        <AmountInput label={t("modal.deposit.label")} value={raw} onChange={(v) => { setRaw(v); setError(null); }} chips={[chip(500), chip(1000), chip(5000), chip(10000)]} autoFocus />
         {balance !== undefined && (
           <div className="summary">
             <div className="summary-row">
-              <span>Cash now</span>
+              <span>{t("modal.deposit.cashNow")}</span>
               <strong className="num">{money(balance)}</strong>
             </div>
             <div className="summary-row">
-              <span>Cash after deposit</span>
+              <span>{t("modal.deposit.cashAfter")}</span>
               <strong className="num">{money(balance + amount)}</strong>
             </div>
           </div>
         )}
         <FormError message={error} />
         <Button type="submit" variant="primary" size="lg" block loading={loading} disabled={!(amount > 0)}>
-          {amount > 0 ? `Add ${money(amount)}` : "Add funds"}
+          {amount > 0 ? t("modal.deposit.submit", { amount: money(amount) }) : t("modal.deposit.title")}
         </Button>
-        <p className="field-hint">
-          Practice money: deposits are instant and nothing leaves your bank.
-        </p>
+        <p className="field-hint">{t("modal.deposit.note")}</p>
       </form>
     </Modal>
   );

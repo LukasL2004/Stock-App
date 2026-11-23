@@ -1,5 +1,6 @@
 import { useId } from "react";
 import { parseAmount } from "../../lib/format";
+import { useI18n } from "../../i18n/useI18n";
 
 interface Props {
   value: string;
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export default function AmountInput({ value, onChange, label, chips, error, autoFocus }: Props) {
+  const { t } = useI18n();
   const id = useId();
   const current = parseAmount(value);
   return (
@@ -38,7 +40,7 @@ export default function AmountInput({ value, onChange, label, chips, error, auto
         />
       </div>
       {chips && (
-        <div className="chips" role="group" aria-label="Quick amounts">
+        <div className="chips" role="group" aria-label={t("ticket.quick")}>
           {chips.map((c) => (
             <button
               key={c.label}

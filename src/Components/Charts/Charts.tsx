@@ -5,7 +5,9 @@ import { cssVar, useTheme } from "../../lib/useTheme";
 import { pct } from "../../lib/format";
 export type { Point, Range } from "./ranges";
 
-import { rangeLabel, type Point, type Range } from "./ranges";
+import type { Point, Range } from "./ranges";
+import { useI18n } from "../../i18n/useI18n";
+import { getLocale } from "../../i18n/core";
 
 interface Props {
   symbol: string;
@@ -21,6 +23,7 @@ interface Props {
 
 /** Robinhood-style line: no grid, no axes, dotted reference at the range start, date label follows the cursor. */
 export default function Charts({ symbol, data, loading, dir, range, ranges, onRangeChange, onHover, height = 320 }: Props) {
+  const { t } = useI18n();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [cursor, setCursor] = useState<{ x: number; time: number } | null>(null);
   const { resolved } = useTheme();
@@ -92,16 +95,16 @@ export default function Charts({ symbol, data, loading, dir, range, ranges, onRa
 
   return (
     <div className="chart">
-      <div className="chart-canvas" ref={containerRef} style={{ height }} role="img" aria-label={`${symbol} price chart, ${pct(changePct)} ${rangeLabel(range).toLowerCase()}`}>
+      <div className="chart-canvas" ref={containerRef} style={{ height }} role="img" aria-label={t("chart.aria", { symbol, pct: pct(changePct), label: t(`chart.${range}`).toLowerCase() })}>
         {cursor && (
           <span className="chart-date num" style={{ left: cursor.x }}>
-            {new Date(cursor.time * 1000).toLocaleString("en-US", range === "1D" ? { hour: "numeric", minute: "2-digit" } : { month: "short", day: "numeric", year: "numeric" })}
+            {new Date(cursor.time * 1000).toLocaleString(getLocale(), range === "1D" ? { hour: "numeric", minute: "2-digit" } : { month: "short", day: "numeric", year: "numeric" })}
           </span>
         )}
         {loading && <span className="chart-loading" aria-hidden="true" />}
-        {!loading && data.length === 0 && <p className="chart-empty">No price history for {symbol} yet.</p>}
+        {!loading && data.length === 0 && <p className="chart-empty">{t("chart.empty", { symbol })}</p>}
       </div>
-      <div className="tabs chart-ranges" role="group" aria-label="Time range" style={{ ["--tabs-active" as string]: activeColor, ["--tabs-active-bg" as string]: activeBg }}>
+      <div className="tabs chart-ranges" role="group" aria-label={t("chart.rangeGroup")} style={{ ["--tabs-active" as string]: activeColor, ["--tabs-active-bg" as string]: activeBg }}>
         {ranges.map((r) => (
           <button key={r} aria-pressed={range === r} onClick={() => onRangeChange(r)}>
             {r}

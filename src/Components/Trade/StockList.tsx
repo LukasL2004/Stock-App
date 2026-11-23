@@ -4,6 +4,7 @@ import Change from "../UI/Change";
 import Sparkline from "../UI/Sparkline";
 import Skeleton from "../UI/Skeleton";
 import TickerLogo from "../UI/TickerLogo";
+import { useI18n } from "../../i18n/useI18n";
 
 interface Props {
   stocks?: Stock[];
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export default function StockList({ stocks, sparks, selected, onSelect, filter = "" }: Props) {
+  const { t } = useI18n();
   if (!stocks) {
     return (
       <div className="rows">
@@ -31,7 +33,7 @@ export default function StockList({ stocks, sparks, selected, onSelect, filter =
     );
   }
   const list = stocks.filter((s) => matchStock(s, filter));
-  if (!list.length) return <p className="muted" style={{ padding: "12px 0" }}>No stocks match “{filter}”.</p>;
+  if (!list.length) return <p className="muted" style={{ padding: "12px 0" }}>{t("stock.noMatch", { q: filter })}</p>;
   return (
     <ul className="rows">
       {list.map((s) => {

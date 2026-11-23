@@ -12,6 +12,8 @@ import Footer from "./Components/Footer/Footer";
 import ChatbaseWidget from "./Components/Reuseable/ChatBot/chatbot";
 import { ThemeProvider } from "./lib/theme";
 import { ToastProvider } from "./lib/toast";
+import { I18nProvider } from "./i18n";
+import { useI18n } from "./i18n/useI18n";
 import { isAuthenticated } from "./lib/auth";
 import Button from "./Components/UI/Button";
 
@@ -29,17 +31,18 @@ function LayoutWithNavbar() {
 }
 
 function RouteError() {
+  const { t } = useI18n();
   const error = useRouteError() as { status?: number; statusText?: string } | undefined;
   const notFound = error?.status === 404;
   return (
     <div className="page" style={{ minHeight: "60vh", display: "grid", placeItems: "center", textAlign: "center" }}>
       <div>
-        <h1 style={{ fontSize: "1.5rem" }}>{notFound ? "Page not found" : "Something went wrong"}</h1>
+        <h1 style={{ fontSize: "1.5rem" }}>{notFound ? t("route.notFound") : t("route.error")}</h1>
         <p className="muted" style={{ margin: "8px 0 20px" }}>
-          {notFound ? "The page you are looking for does not exist." : "Reload the page or go back to your dashboard."}
+          {notFound ? t("route.notFoundBody") : t("route.errorBody")}
         </p>
         <Link to="/dashboard">
-          <Button variant="primary">Go to dashboard</Button>
+          <Button variant="primary">{t("route.goDashboard")}</Button>
         </Link>
       </div>
     </div>
@@ -74,10 +77,12 @@ const router = createBrowserRouter([
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <ToastProvider>
-        <RouterProvider router={router} />
-      </ToastProvider>
-    </ThemeProvider>
+    <I18nProvider>
+      <ThemeProvider>
+        <ToastProvider>
+          <RouterProvider router={router} />
+        </ToastProvider>
+      </ThemeProvider>
+    </I18nProvider>
   );
 }

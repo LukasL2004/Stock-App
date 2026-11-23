@@ -29,8 +29,9 @@ Login is prefilled with `demo@wealthgrow.app` / `demo1234`. Useful for the thesi
 
 ```
 src/
+  i18n/           en/ro/de/fr/es/it dictionaries, translate(), I18nProvider, useI18n()
   lib/            http client (auth header, 401 handling, error parsing), auth/session helpers,
-                  number/date formatting, theme + toast providers, realtime (STOMP) hook
+                  locale-aware number/date formatting, theme + toast providers, realtime (STOMP) hook
   Components/UI/  design primitives: Button, Modal (focus trap, Esc), Field, AmountInput,
                   Change (signed +arrow), Sparkline, Skeleton, EmptyState, Avatar
   Components/     Navbar (with search), Footer, Charts (lightweight-charts + ranges.ts),
@@ -47,6 +48,17 @@ src/
 
 `/dashboard`, `/portfolio`, `/profile` (authenticated), `/Login`, `/SignUp`, `/ForgotPassword`.
 Old paths (`/LandingPage`, `/Wallet`, `/Profile`) redirect to the new ones.
+
+## Languages
+
+The UI is available in English, Romanian, German, French, Spanish and Italian. Strings live in
+`src/i18n/en.ts` (source of truth) and one file per language (`ro.ts`, `de.ts`, `fr.ts`, `es.ts`, `it.ts`),
+each typed as `Record<Key, string>`, so a missing translation is a compile error.
+Components call `const { t } = useI18n()` and `t("area.key", { vars })`. The active language is stored in
+`localStorage` (`wg-lang`), defaults to the browser language, sets `<html lang>` and drives number/date
+formatting through `Intl` (`$1,234.56` vs `1.234,56 $`). Switch it from the dropdown in the navbar or on the
+auth pages, or from the select in Profile. To add a language: create `xx.ts`, register it in `core.ts`
+(`LANGS`, `LOCALES`, `LANG_NAMES`, `dictionaries`) and the pickers update themselves.
 
 ## Design notes
 

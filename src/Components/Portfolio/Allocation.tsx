@@ -3,6 +3,7 @@ import { companyName, money, pct, shares as fmtShares } from "../../lib/format";
 import Change from "../UI/Change";
 import TickerLogo from "../UI/TickerLogo";
 import "./Allocation.css";
+import { useI18n } from "../../i18n/useI18n";
 
 export interface Holding {
   symbol: string;
@@ -16,17 +17,18 @@ const COLORS = ["#00c805", "#1d4ed8", "#f59e0b", "#8b5cf6", "#ec4899", "#14b8a6"
 
 /** Stacked allocation bar plus holdings rows, the way banking apps show "where your money is". */
 export default function Allocation({ holdings, cash }: { holdings: Holding[]; cash: number }) {
+  const { t } = useI18n();
   const total = holdings.reduce((a, h) => a + h.marketValue, 0) + Math.max(0, cash);
   const segs = holdings.map((h, i) => ({ key: h.symbol, label: h.symbol, value: h.marketValue, color: COLORS[i % COLORS.length], weight: total ? (h.marketValue / total) * 100 : 0 }));
-  if (cash > 0) segs.push({ key: "cash", label: "Cash", value: cash, color: "var(--border-strong)", weight: total ? (cash / total) * 100 : 0 });
+  if (cash > 0) segs.push({ key: "cash", label: t("common.cash"), value: cash, color: "var(--border-strong)", weight: total ? (cash / total) * 100 : 0 });
 
   if (!total) {
     return (
       <div className="empty">
-        <h3>Nothing here yet</h3>
-        <p>Add funds and buy your first stock to see how your money is split.</p>
+        <h3>{t("alloc.emptyTitle")}</h3>
+        <p>{t("alloc.emptyBody")}</p>
         <Link to="/dashboard" className="btn btn-primary">
-          Find a stock
+          {t("alloc.find")}
         </Link>
       </div>
     );
@@ -34,7 +36,7 @@ export default function Allocation({ holdings, cash }: { holdings: Holding[]; ca
 
   return (
     <div className="alloc">
-      <div className="alloc-bar" role="img" aria-label={`Allocation: ${segs.map((s) => `${s.label} ${pct(s.weight, { sign: false })}`).join(", ")}`}>
+      <div className="alloc-bar" role="img" aria-label={`${t("alloc.aria")}: ${segs.map((s) => `${s.label} ${pct(s.weight, { sign: false })}`).join(", ")}`}>
         {segs.map((s) => (
           <span key={s.key} style={{ width: `${s.weight}%`, background: s.color }} title={`${s.label} ${pct(s.weight, { sign: false })}`} />
         ))}
@@ -55,9 +57,7 @@ export default function Allocation({ holdings, cash }: { holdings: Holding[]; ca
               <TickerLogo symbol={h.symbol} />
               <span className="row-id">
                 <strong>{companyName(h.symbol)}</strong>
-                <span>
-                  {h.shares !== undefined ? `${fmtShares(h.shares)} shares` : h.symbol} · {money(h.invested)} invested
-                </span>
+                <span>{h.shares !== undefined ? t("alloc.line", { shares: fmtShares(h.shares), amount: money(h.invested) }) : `${h.symbol} · ${money(h.invested)}`}</span>
               </span>
               <span className="row-end">
                 <strong className="num">{money(h.marketValue)}</strong>
@@ -71,8 +71,8 @@ export default function Allocation({ holdings, cash }: { holdings: Holding[]; ca
             $
           </span>
           <span className="row-id">
-            <strong>Cash</strong>
-            <span>Available to invest</span>
+            <strong>{t("common.cash")}</strong>
+            <span>{t("alloc.cashSub")}</span>
           </span>
           <span className="row-end">
             <strong className="num">{money(cash)}</strong>
