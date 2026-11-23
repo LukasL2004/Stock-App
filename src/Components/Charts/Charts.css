@@ -16,3 +16,8 @@
 .chart-ranges { padding-top: 4px; }
 /* keep the lightweight-charts axis text quiet */
 .chart-canvas canvas { border-radius: 0; }
+.chart-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.chart-hint { font-size: 0.75rem; color: var(--text-3); }
+.chart-canvas { cursor: grab; touch-action: pan-y; }
+.chart-canvas:active { cursor: grabbing; }
+@media (max-width: 720px) { .chart-hint { display: none; } }

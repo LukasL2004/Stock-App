@@ -122,6 +122,8 @@ export const ro: Record<Key, string> = {
   "chart.aria": "Graficul prețului {symbol}, {pct} {label}",
   "chart.empty": "Încă nu există istoric de preț pentru {symbol}.",
   "chart.rangeGroup": "Interval de timp",
+  "chart.custom": "Perioada selectată",
+  "chart.hint": "Trage ca să vezi în trecut, scroll sau pinch ca să mărești",
 
   "ticket.buy": "Cumpără {symbol}",
   "ticket.sell": "Vinde {symbol}",

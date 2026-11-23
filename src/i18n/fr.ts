@@ -118,6 +118,8 @@ export const fr: Record<Key, string> = {
   "chart.aria": "Graphique du cours de {symbol}, {pct} {label}",
   "chart.empty": "Pas encore d’historique de cours pour {symbol}.",
   "chart.rangeGroup": "Période",
+  "chart.custom": "Période sélectionnée",
+  "chart.hint": "Glissez pour remonter le temps, molette ou pincement pour zoomer",
   "ticket.buy": "Acheter {symbol}",
   "ticket.sell": "Vendre {symbol}",
   "ticket.notOwned": "Vous ne détenez pas {symbol}",

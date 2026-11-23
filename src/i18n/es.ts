@@ -118,6 +118,8 @@ export const es: Record<Key, string> = {
   "chart.aria": "Gráfico del precio de {symbol}, {pct} {label}",
   "chart.empty": "Aún no hay historial de precios para {symbol}.",
   "chart.rangeGroup": "Periodo",
+  "chart.custom": "Periodo seleccionado",
+  "chart.hint": "Arrastra para ver el pasado, rueda o pellizco para ampliar",
   "ticket.buy": "Comprar {symbol}",
   "ticket.sell": "Vender {symbol}",
   "ticket.notOwned": "No tienes {symbol}",

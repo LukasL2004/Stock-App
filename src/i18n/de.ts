@@ -118,6 +118,8 @@ export const de: Record<Key, string> = {
   "chart.aria": "Kurschart {symbol}, {pct} {label}",
   "chart.empty": "Noch kein Kursverlauf für {symbol}.",
   "chart.rangeGroup": "Zeitraum",
+  "chart.custom": "Gewählter Zeitraum",
+  "chart.hint": "Ziehen für die Vergangenheit, scrollen oder zoomen zum Vergrößern",
   "ticket.buy": "{symbol} kaufen",
   "ticket.sell": "{symbol} verkaufen",
   "ticket.notOwned": "Du besitzt kein {symbol}",

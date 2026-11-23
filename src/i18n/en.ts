@@ -125,6 +125,8 @@ export const en = {
   "chart.aria": "{symbol} price chart, {pct} {label}",
   "chart.empty": "No price history for {symbol} yet.",
   "chart.rangeGroup": "Time range",
+  "chart.custom": "Selected period",
+  "chart.hint": "Drag to look back, scroll or pinch to zoom",
 
   // order ticket
   "ticket.buy": "Buy {symbol}",

@@ -7,7 +7,7 @@ import WalletService from "../../Services/WalletService";
 import type { Stock, Chart } from "../../Services/Interfaces/StockInfoInterface";
 import type { portofolioData } from "../../Services/Interfaces/PortofolioInterface";
 import type { total } from "../../Services/Interfaces/TotalInterface";
-import Charts from "../../Components/Charts/Charts";
+import Charts, { type VisibleWindow } from "../../Components/Charts/Charts";
 import { ALL_RANGES, hasIntraday, sliceRange, type Point, type Range } from "../../Components/Charts/ranges";
 import { useI18n } from "../../i18n/useI18n";
 import OrderTicket from "../../Components/Trade/OrderTicket";
@@ -53,7 +53,8 @@ export default function LandingPage() {
   const position = loadedPosition?.symbol === symbol ? loadedPosition : undefined;
   const [totals, setTotals] = useState<total>();
   const [cash, setCash] = useState<number>();
-  const [range, setRange] = useState<Range>("1M");
+  const [range, setRange] = useState<Range | null>("1M");
+  const [visible, setVisible] = useState<VisibleWindow | null>(null);
   const [hover, setHover] = useState<Point | null>(null);
   const [modal, setModal] = useState<"buy" | "sell" | null>(null);
 
@@ -124,13 +125,28 @@ export default function LandingPage() {
 
   const points = useMemo(() => series[symbol] ?? [], [series, symbol]);
   const ranges = useMemo(() => (hasIntraday(points) ? ALL_RANGES : ALL_RANGES.filter((r) => r !== "1D")), [points]);
-  const effectiveRange: Range = ranges.includes(range) ? range : "1M";
-  const data = useMemo(() => sliceRange(points, effectiveRange), [points, effectiveRange]);
-  const first = data[0]?.value;
-  const shownPrice = hover ? hover.value : price || data[data.length - 1]?.value;
+  const effectiveRange: Range | null = range === null ? null : ranges.includes(range) ? range : "1M";
+  const onVisibleChange = useCallback((w: VisibleWindow | null, byUser: boolean) => {
+    setVisible(w);
+    if (byUser) setRange(null);
+  }, []);
+  // Until the chart reports, fall back to the preset slice.
+  const fallback = useMemo(() => sliceRange(points, effectiveRange ?? "1M"), [points, effectiveRange]);
+  const first = visible?.first.value ?? fallback[0]?.value;
+  const windowLast = visible?.last.value ?? fallback[fallback.length - 1]?.value;
+  const latest = points[points.length - 1];
+  const atLiveEdge = !visible || !latest || visible.last.time >= latest.time;
+  const shownPrice = hover ? hover.value : atLiveEdge ? price || windowLast : windowLast;
   const rangeChange = first !== undefined && shownPrice !== undefined ? shownPrice - first : 0;
   const rangePct = first ? (rangeChange / first) * 100 : 0;
   const dir: "up" | "down" | "flat" = rangeChange > 0 ? "up" : rangeChange < 0 ? "down" : "flat";
+  const changeLabel = hover
+    ? fmtDate(new Date(hover.time * 1000))
+    : effectiveRange
+      ? t(`chart.${effectiveRange}`)
+      : visible
+        ? `${fmtDate(new Date(visible.first.time * 1000))} – ${fmtDate(new Date(visible.last.time * 1000))}`
+        : t("chart.custom");
 
   const sparks = useMemo(() => {
     const c: Record<string, number[]> = {};
@@ -173,7 +189,7 @@ export default function LandingPage() {
                   {money(shownPrice)}
                 </div>
                 <div className="stock-change">
-                  <Change kind="both" value={rangeChange} pctValue={rangePct} label={hover ? fmtDate(new Date(hover.time * 1000)) : t(`chart.${effectiveRange}`)} />
+                  <Change kind="both" value={rangeChange} pctValue={rangePct} label={changeLabel} />
                 </div>
               </>
             ) : (
@@ -185,7 +201,7 @@ export default function LandingPage() {
             )}
           </header>
 
-          <Charts symbol={symbol} data={data} loading={chartsLoading} dir={dir} range={effectiveRange} ranges={ranges} onRangeChange={setRange} onHover={setHover} />
+          <Charts symbol={symbol} points={points} loading={chartsLoading} dir={dir} range={effectiveRange} ranges={ranges} onRangeChange={setRange} onHover={setHover} onVisibleChange={onVisibleChange} />
 
           <section className="section">
             <div className="section-title">
